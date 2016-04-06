@@ -1,10 +1,11 @@
 Function LetterToColNumber(ColLetter As String) As Long
-'Function used to convert col letters eg "AA" to colnumber eg. 27
+'Function used to convert col letters eg "AA" --> 27
 Dim vArr() As String
 LetterToColNumber = Replace(Columns(ColLetter).Address(True, True, xlRC1), "C", "")
 End Function
 
 Function NumberToColumnLetter(ColNumber As Long) As String
+'Function used to convert column number to column letter eg. 27-->"AA"
 Dim vArr() As String
 vArr() = Split(Columns(ColNumber).Address(False, False), ":")
 NumberToColumnLetter = vArr(0)
