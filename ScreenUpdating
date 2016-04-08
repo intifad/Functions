@@ -1,0 +1,14 @@
+Sub ToggleScreenUpdating(sONOrOff As String)
+
+    With Application
+        Select Case sONOrOff
+            Case "ON"
+                .ScreenUpdating = True
+                .Calculation = xlCalculationAutomatic
+            Case "OFF"
+                .ScreenUpdating = False
+                .Calculation = xlCalculationManual
+        End Select
+    End With
+    
+End Sub
