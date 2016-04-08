@@ -1,0 +1,17 @@
+Sub WorksheetClear(sh As Worksheet)
+
+    With sh
+        .AutoFilterMode = False
+        .Rows.Clear
+        .Rows.RowHeight = 15
+        .Columns.ColumnWidth = 8.43
+        .Activate
+        .Cells(1, 1).Select
+    End With
+    
+    With ActiveWindow
+        .FreezePanes = False
+        .Zoom = 80
+    End With
+    
+End Sub
