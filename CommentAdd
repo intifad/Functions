@@ -1,0 +1,15 @@
+Sub AddComment(MyCell As Range, sComment As String, Optional MyWidth As Integer = 108, Optional MyHeight As Integer = 59)
+
+Dim MyComment As Comment
+
+    Set MyComment = MyCell.Comment
+    If MyComment Is Nothing = False Then MyCell.Comment.Delete
+    
+    MyCell.AddComment sComment
+    
+    With MyCell.Comment
+        .Shape.Width = MyWidth
+        .Shape.Height = MyHeight
+    End With
+    
+End Sub
