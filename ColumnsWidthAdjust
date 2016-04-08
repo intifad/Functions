@@ -1,0 +1,15 @@
+Sub ColumnsWidthAdjust(sh As Worksheet, MaxColumnWidth As Double)
+
+Dim i As Byte
+Dim LastCol As Byte
+    With sh
+        LastCol = .Cells(1, .Columns.Count).End(xlToLeft).Column
+        
+        .Range("A1").CurrentRegion.Columns.AutoFit
+        
+        For i = 1 To LastCol
+            If .Columns(i).ColumnWidth > MaxColumnWidth Then .Columns(i).ColumnWidth = MaxColumnWidth
+        Next i
+    End With
+    
+End Sub
