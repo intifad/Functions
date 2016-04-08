@@ -1,0 +1,10 @@
+Function CreateArrayWithConsIntegers(FirstNumber As Long, LastNumber As Long) As Variant
+Dim arr() As Variant
+Dim i As Long
+ReDim arr(FirstNumber To LastNumber)
+
+For i = FirstNumber To LastNumber
+    arr(i) = i
+Next
+CreateArrayWithConsIntegers = arr
+End Function
