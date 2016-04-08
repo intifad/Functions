@@ -1,0 +1,11 @@
+Function WorksheetExists(wb As Workbook, sSheetName As String) As Boolean
+
+Dim sh As Worksheet
+
+    On Error Resume Next
+    Set sh = wb.Sheets(sSheetName)
+    On Error GoTo 0
+    
+    WorksheetExists = (sh Is Nothing = False)
+    
+End Function
