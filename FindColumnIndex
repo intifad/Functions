@@ -1,0 +1,38 @@
+Function FindColumnIndex(HeaderRow As Long, shSheet As Worksheet, Text As String, Whole As Boolean) As Long
+'By Wojciech D.
+'Function used to localize column index, basing on the text in given row
+'If text value is not found then macro signalizes that and stops executing, the same in case of 2 values found.
+Dim LookingAt As Integer
+Dim C As Range
+Dim Neew As Range
+Dim strMessage As String
+
+If Whole Then
+    LookingAt = xlWhole
+Else
+    LookingAt = xlPart
+End If
+
+Set C = shSheet.Rows(HeaderRow).Find(What:=Text, LookAt:=LookingAt, MatchCase:=False)
+
+If C Is Nothing Then
+    strMessage = "Macro could not find text: " & Text & vbNewLine
+    strMessage = strMessage & "In sheet: " & shSheet.Name & vbNewLine
+    strMessage = strMessage & "Header Row: " & HeaderRow
+    MsgBox strMessage, vbCritical, "Value not found!"
+    End
+End If
+
+Set Neew = shSheet.Rows(HeaderRow).FindNext(C)
+
+If C.Address = Neew.Address Then
+    FindColumnIndex = C.Column
+Else
+    strMessage = "There are at least 2 cells with value: " & Text & vbNewLine
+    strMessage = strMessage & "In sheet: " & shSheet.Name & vbNewLine
+    strMessage = strMessage & "Header Row: " & HeaderRow
+    MsgBox strMessage, vbCritical, "The same values!"
+    End
+End If
+
+End Function
