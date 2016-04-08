@@ -1,0 +1,40 @@
+Function CreateFolderOnDesktop(sFolderName As String, Optional sSubfolder As String) As String
+
+Dim objFSO As Object
+Dim sDesktopAddress As String
+Dim sMainPath As String
+Dim sFullPath As String
+
+
+    Set objFSO = CreateObject("Scripting.FilesystemObject")
+    
+    sDesktopAddress = CreateObject("WScript.Shell").SpecialFolders("Desktop")
+    sMainPath = sDesktopAddress & "\" & sFolderName
+    sFullPath = sMainPath & "\" & sSubfolder
+    If Right(sFullPath, 1) = "\" Then
+        CreateFolderOnDesktop = sFullPath
+    Else
+        CreateFolderOnDesktop = sFullPath & "\"
+    End If
+    
+    
+    If objFSO.FolderExists(sMainPath) = False Then
+        objFSO.CreateFolder sMainPath
+        If objFSO.FolderExists(sFullPath) = False Then
+            objFSO.CreateFolder sFullPath
+        Else
+            Set objFSO = Nothing
+            Exit Function
+        End If
+    Else
+        If objFSO.FolderExists(sFullPath) = False Then
+            objFSO.CreateFolder sFullPath
+        Else
+            Set objFSO = Nothing
+            Exit Function
+        End If
+    End If
+    
+    Set objFSO = Nothing
+    
+End Function
