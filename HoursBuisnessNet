@@ -1,0 +1,111 @@
+ProcessingTime = NetBusinessHours(CreatedOn, LastClosed, "08:00", "17:00")
+
+
+
+
+Function NetBusinessHours(DateTimeStart As Date, DateTimeEnd As Date, sBusinessStart As String, sBusinessEnd As String) As Double
+
+Dim HoursInBusinessDay As Byte
+
+Dim BusinessStart As Double
+Dim BusinessEnd As Double
+Dim MyHelp As Double
+Dim MyDiff As Double
+Dim Part1 As Double
+Dim Part2 As Double
+Dim Part3 As Double
+
+Dim DateTimeStart2 As Date
+Dim DateTimeEnd2 As Date
+Dim BusinessStartDate As Date
+Dim BusinessEndDate As Date
+
+
+
+
+
+
+
+
+    BusinessStartDate = TimeValue(sBusinessStart)
+    BusinessEndDate = TimeValue(sBusinessEnd)
+    
+    BusinessStart = Round(BusinessStartDate, 11)
+    BusinessEnd = Round(BusinessEndDate, 11)
+    
+    
+    
+    
+    
+    'correction of datetimestart
+    MyHelp = DateTimeStart - Int(DateTimeStart)
+    MyHelp = Round(MyHelp, 11)
+    
+    If MyHelp >= BusinessStart And MyHelp <= BusinessEnd Then
+        DateTimeStart2 = DateTimeStart
+    Else
+        If MyHelp < BusinessStart Then
+            DateTimeStart2 = Int(DateTimeStart) + BusinessStart
+        ElseIf MyHelp > BusinessEnd Then
+            DateTimeStart2 = Int(DateTimeStart) + BusinessEnd
+        End If
+    End If
+    
+    If Weekday(DateTimeStart2, vbMonday) = 6 Or Weekday(DateTimeStart2, vbMonday) = 7 Then
+        DateTimeStart2 = WorksheetFunction.WorkDay(DateTimeStart2, 1) + BusinessStart
+    End If
+    
+    
+    
+    
+    'correction of datetimeend
+    MyHelp = DateTimeEnd - Int(DateTimeEnd)
+    MyHelp = Round(MyHelp, 11)
+    
+    If MyHelp >= BusinessStart And MyHelp <= BusinessEnd Then
+        DateTimeEnd2 = DateTimeEnd
+    Else
+        If MyHelp < BusinessStart Then
+            DateTimeEnd2 = Int(DateTimeEnd) + BusinessStart
+        ElseIf MyHelp > BusinessEnd Then
+            DateTimeEnd2 = Int(DateTimeEnd) + BusinessEnd
+        End If
+    End If
+    
+    If Weekday(DateTimeEnd2, vbMonday) = 6 Or Weekday(DateTimeEnd2, vbMonday) = 7 Then
+        DateTimeEnd2 = WorksheetFunction.WorkDay(DateTimeEnd2, 1) + BusinessStart
+    End If
+    
+    
+    
+    'calculate the number of business hours on the start day
+    MyDiff = 0
+    If Int(DateTimeStart2) = Int(DateTimeEnd2) Then
+        MyDiff = DateTimeEnd2 - DateTimeStart2
+        MyDiff = Round(MyDiff, 11)
+        MyDiff = MyDiff * 24
+    Else
+        Part1 = BusinessEndDate - (DateTimeStart2 - Int(DateTimeStart2))
+        Part1 = Round(Part1, 11)
+        Part1 = Part1 * 24
+        
+        'calculate the number of whole working days
+        MyHelp = WorksheetFunction.NetworkDays(DateTimeStart2, DateTimeEnd2) - 2
+        HoursInBusinessDay = Hour(BusinessEndDate) - Hour(BusinessStartDate)
+        Part2 = MyHelp * HoursInBusinessDay
+        
+        'calculate the number of business hours on the end day
+        Part3 = (DateTimeEnd2 - Int(DateTimeEnd2)) - BusinessStartDate
+        Part3 = Round(Part3, 11)
+        Part3 = Part3 * 24
+        
+        
+        MyDiff = Part1 + Part2 + Part3
+    End If
+
+    
+
+    
+    NetBusinessHours = MyDiff
+    
+End Function
