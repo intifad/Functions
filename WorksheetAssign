@@ -1,0 +1,15 @@
+Function WorksheetAssign(wb As Workbook, sSheetName As String) As Worksheet
+
+Err.Clear
+On Error Resume Next
+Set WorksheetAssign = wb.Sheets(sSheetName)
+
+If Err.Number = 9 Then
+    On Error GoTo 0
+    MsgBox "Cannot find worksheet called: " & sSheetName & vbNewLine & vbNewLine & "In workbook: " & wb.Name, vbCritical
+    Call ToggleScreenUpdating("ON")
+    End
+End If
+On Error GoTo 0
+
+End Function
