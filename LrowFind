@@ -1,0 +1,3 @@
+Function FindLrow(shSheet As Worksheet, Col As Long) As Long
+FindLrow = shSheet.Cells(shSheet.Rows.Count, Col).End(xlUp).Row
+End Function
