@@ -13,7 +13,7 @@ Else
     LookingAt = xlPart
 End If
 
-Set C = shSheet.Find(What:=Text, LookAt:=LookingAt, MatchCase:=False)
+Set C = shSheet.usedrange.Find(What:=Text, LookAt:=LookingAt, MatchCase:=False)
 
 If C Is Nothing Then
     strMessage = "Macro could not find text: " & Text & vbNewLine
@@ -22,7 +22,7 @@ If C Is Nothing Then
     End
 End If
 
-Set Neew = shSheet.Rows(HeaderRow).FindNext(C)
+Set Neew = shSheet.usedrange.FindNext(C)
 
 If C.Address = Neew.Address Then
     Set CellFind = C
