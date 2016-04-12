@@ -25,7 +25,7 @@ End If
 Set Neew = shSheet.Rows(HeaderRow).FindNext(C)
 
 If C.Address = Neew.Address Then
-    Set FindTableCorner = C
+    Set CellFind = C
 Else
     strMessage = "There are at least 2 cells with value: " & Text & vbNewLine
     strMessage = strMessage & "In sheet: " & shSheet.Name & vbNewLine
