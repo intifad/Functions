@@ -1,0 +1,24 @@
+Sub TrimRange(Zakres As Range)
+'Fukcja która na dzień dobry pobiera zakres a następnie wartości które są w zakresie trymuje.
+'Wersja z Application.WorkheetFUnction.Trim wycina nadmiarowe spacje ze środka i końców stringa
+'Można jeszcze używać z fukcją trim VBA wtedy obcinane są spacje z końca i początku tylko
+'Amen
+
+Dim DataRange As Variant
+Dim Irow As Long
+Dim Icol As Integer
+Dim MyVar As Variant
+
+DataRange = Zakres.Value
+For Irow = 1 To UBound(DataRange, 1)
+  For Icol = 1 To UBound(DataRange, 2)
+        MyVar = DataRange(Irow, Icol)
+    If Not IsNumeric(MyVar) Then
+        MyVar = Application.WorksheetFunction.Trim(Application.WorksheetFunction.Substitute(MyVar, Chr(160), Chr(32)))
+        DataRange(Irow, Icol) = MyVar
+    End If
+  Next Icol
+Next Irow
+Zakres.Value = DataRange
+
+End Sub
