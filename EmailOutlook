@@ -1,0 +1,118 @@
+Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
+    ByVal Subject As String, Optional zalacznik As Variant, Optional Range_To_Send As Variant, Optional defferedtime As Date)
+    
+  Dim FSO As Object
+  Dim HTMLcode As String
+  Dim HTMLfile As Object
+  Dim MyApp As Boolean
+  Dim olApp As Object
+  Dim rng As Range
+  Dim TempFile As String
+  Dim wks As Worksheet
+  Dim SendDisplay As Integer
+    SendDisplay = ThisWorkbook.Sheets(1).Range("J2").Value
+  
+
+  Const ForReading As Long = 1
+  Const olMailItem = 0
+  Const olFormatHTML = 2
+  Const UseDefault As Long = -2
+    
+     On Error GoTo CleanUp
+     
+     If IsMissing(Range_To_Send) Then
+        Set rng = Selection
+     Else
+        Select Case TypeName(Range_To_Send)
+          Case Is = "Range"
+              Set rng = Range_To_Send
+          Case Is = "String"
+              Set rng = Evaluate(Range_To_Send)
+          Case Else
+              MsgBox "Your Selection is Not a Valid Range."
+              GoTo CleanUp
+        End Select
+     End If
+     
+     ' Copy the worksheet to create a new workbook
+       Set wks = rng.Parent
+       wks.Copy
+     
+     ' The new workbook will be saved to the user's Temp directoy
+       TempFile = Environ("Temp") & "\" & wks.Name & ".htm"
+     
+     ' If a file by this exists then delete it
+       If Dir(TempFile) <> "" Then Kill TempFile
+     
+         ' Start Outlook
+           Set olApp = CreateObject("Outlook.Application")
+      
+         ' Convert the Message worksheet into HTML
+           With ActiveWorkbook.PublishObjects.Add( _
+             SourceType:=xlSourceRange, _
+             Filename:=TempFile, _
+             Sheet:=wks.Name, _
+             Source:=rng.Address, _
+             HtmlType:=xlHtmlStatic)
+            .Publish (True)
+           End With
+       
+         ' Read the HTML file back as a string
+           Set FSO = CreateObject("Scripting.FileSystemObject")
+           Set HTMLfile = FSO.OpenTextFile(TempFile, ForReading, True, UseDefault)
+           
+            ' Read in the entire file as a string
+              HTMLcode = HTMLfile.ReadAll
+             
+           HTMLfile.Close
+          
+          
+         ' Re-align the HTML code to the left side of the page
+           HTMLcode = Replace(HTMLcode, "align=center x:publishsource=", _
+                              "align=left x:publishsource=")
+              Dim hoho As String
+              hoho = "   zzz "
+         ' Compose and send the email
+           Set olEmail = olApp.CreateItem(olMailItem)
+           With olEmail
+           .display
+           End With
+           Signature = olEmail.HTMLBody
+           
+             With olEmail
+               .To = Recipient
+               .CC = RecipientCC
+               .Subject = Subject
+               .BodyFormat = olFormatHTML
+               .HTMLBody = HTMLcode & "<br>" & Signature
+               .Attachments.Add (zalacznik)
+               .deferreddeliverytime = defferedtime
+               If SendDisplay = 1 Then .Send Else .display
+             End With
+            
+   ' Exit Outlook
+   '  olApp.Quit
+            
+CleanUp:
+   ' Did an error occur
+     If Err <> 0 Then
+        MsgBox "Run-time error '" & Err.Number & "':" & vbCrLf & vbCrLf & Err.Description
+     End If
+   
+   ' Close the new workbook and don't save it
+     ActiveWorkbook.Close SaveChanges:=False
+  
+   ' Delete the Temp File
+     If Dir(TempFile) <> "" Then Kill TempFile
+   
+   ' Delete the Publish Object
+     With ActiveWorkbook.PublishObjects
+       If .Count <> 0 Then .Item(.Count).Delete
+     End With
+   
+   ' Free memory resources
+     Set olApp = Nothing
+     Set olEmail = Nothing
+     Set FSO = Nothing
+
+End Sub
