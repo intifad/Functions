@@ -1,0 +1,26 @@
+Sub GetMostRecentFile(katalog As String, nazwapliku As String)
+    
+    Dim FileSys As FileSystemObject, objFile As File, myFolder As folder, strFilename As String, dteFile As Date, myDir As String
+        
+    'set path for files - change for your folder
+     myDir = katalog
+    
+    'set up filesys objects
+    Set FileSys = New FileSystemObject
+    Set myFolder = FileSys.GetFolder(myDir)
+        
+    
+    'loop through each file and get date last modified. If largest date then store Filename
+     For Each objFile In myFolder.Files
+        If objFile.Name Like nazwapliku Then
+        If objFile.DateLastModified > dteFile Then
+            dteFile = objFile.DateLastModified
+            strFilename = objFile.Name
+        End If
+        End If
+    Next objFile
+    'zwraca nazwe pliku dla najswiezszego pliku
+   nazwapliku = strFilename
+    Set FileSys = Nothing
+    Set myFolder = Nothing
+End Sub
