@@ -1,0 +1,56 @@
+Public Sub Notes_Email_Excel_Cells3(Subject As String, SendTo As String, CopyTo As String, embedCells As Range)
+
+    Dim NSession As Object
+    Dim NUIWorkSpace As Object
+    Dim NDatabase As Object
+    Dim NDoc As Object
+    Dim NUIdoc As Object
+    Dim embedCells As Range
+    
+    Set NSession = CreateObject("Notes.NotesSession")
+    Set NUIWorkSpace = CreateObject("Notes.NotesUIWorkspace")
+    Set NDatabase = NSession.GetDatabase("", "")
+    If Not NDatabase.IsOpen Then NDatabase.OPENMAIL
+    
+    'Create a new Lotus Notes document
+    
+    Set NDoc = NDatabase.CreateDocument
+    
+    With NDoc
+        .SendTo = SendTo
+        .CopyTo = CopyTo
+        .Subject = Subject
+        
+        'Email body text, including a placeholder which will be replaced by the Excel cells
+        
+        .Body = "Text in email body" & vbLf & vbLf & _
+            "{IMAGE_PLACEHOLDER}" & vbLf & vbLf & _
+            "Excel cells are shown above"
+        
+        .Save True, False
+    End With
+    
+    'Edit the new document using Notes UI to copy and paste the Excel cells into it
+    
+    Set NUIdoc = NUIWorkSpace.EDITDocument(True, NDoc)
+    With NUIdoc
+    
+        'Find the placeholder in the Body item
+        
+        .GotoField "Body"
+        .FINDSTRING "{IMAGE_PLACEHOLDER}"
+        '.DESELECTALL 'Uncomment to leave the placeholder in place (cells are inserted immediately before it)
+        
+        'Copy Excel cells as a bitmap to the clipboard and paste into the email
+        
+        embedCells.CopyPicture xlBitmap
+        .Paste
+        Application.CutCopyMode = False
+       
+        .Send
+        .Close
+    End With
+    
+    Set NSession = Nothing
+
+End Sub
