@@ -17,7 +17,7 @@ If sFilePath <> vbNullString Then
         Set OpenWorkbook = Workbooks(sWkbName)
         Err.Clear
         On Error GoTo 0
-        If wkbSource Is Nothing = False Then GoTo WorkbookOpened
+        If OpenWorkbook Is Nothing = False Then GoTo WorkbookOpened
     Else
     'file does not exists
         MsgBox "Could not find file in directory:" & vbNewLine & sFilePath, vbCritical
