@@ -1,6 +1,6 @@
 Sub Validate(sh As Worksheet, sAddress As String)
 If sh.Range(sAddress) = "" Then
-    MsgBox "Please fill in missing data in sheet " & sh.Name & "in cell: " & sh.Range(sAddress).Address(False, False, xlA1)
+    MsgBox "Please fill in missing data in sheet " & sh.Name & " in cell: " & sh.Range(sAddress).Address(False, False, xlA1)
     End
 End If
 
