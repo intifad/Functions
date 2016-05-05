@@ -1,0 +1,50 @@
+Function OpenWorkbook(Optional sFilePath As String, Optional sTitle As String, Optional sDefaultPath As String) As Workbook
+'##################################################################################################################
+'# Wojciech Dobrzycki                                                                                             #
+'# 2016-05-05                                                                                                     #
+'# Macro opens workbook basing on filepath or by manual selection, also chcecks if workbook is already opened     #
+'##################################################################################################################
+
+Dim sWkbName As String
+
+Dim fso As Object
+Set fso = CreateObject("scripting.filesystemobject")
+
+If sFilePath <> vbNullString Then
+    If Dir(sFilePath) <> "" Then
+        sWkbName = fso.getfilename(sFilePath)
+        On Error Resume Next
+        Set OpenWorkbook = Workbooks(sWkbName)
+        Err.Clear
+        On Error GoTo 0
+        If wkbSource Is Nothing = False Then GoTo WorkbookOpened
+    Else
+    'file does not exists
+        MsgBox "Could not find file in directory:" & vbNewLine & sFilePath, vbCritical
+        ToggleScreenUpdating ("ON")
+        End
+    End If
+Else
+    With Application.FileDialog(msoFileDialogOpen)
+        .AllowMultiSelect = False
+        .Title = sTitle
+        .InitialFileName = sDefaultPath
+        .Show
+        If .SelectedItems.Count = 0 Then
+            MsgBox "You did not choose any file!"
+            ToggleScreenUpdating ("ON")
+            End
+        Else
+        sFilePath = .SelectedItems.Item(1)
+        End If
+    End With
+End If
+
+Set OpenWorkbook = Workbooks.Open(sFilePath)
+
+WorkbookOpened:
+
+Set wkbSource = Nothing
+Set fso = Nothing
+
+End Function
