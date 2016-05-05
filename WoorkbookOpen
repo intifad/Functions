@@ -44,7 +44,6 @@ Set OpenWorkbook = Workbooks.Open(sFilePath)
 
 WorkbookOpened:
 
-Set wkbSource = Nothing
 Set fso = Nothing
 
 End Function
