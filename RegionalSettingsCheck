@@ -1,0 +1,13 @@
+Sub CheckRegionalSettings()
+Dim sMessage As String
+'Checks if country and language is UK(english)
+If Application.International(xlCountrySetting) <> 44 Then
+    sMessage = "Your Windows regional settings are not set to: UK(English)" & vbNewLine
+    sMessage = sMessage & "Please set regional setting to UK(English) otherwise macro may not work correctly" & vbNewLine
+    sMessage = sMessage & vbNewLine & "If you want to proceed press Retry"
+    If MsgBox(sMessage, vbRetryCancel) = vbCancel Then
+        End
+    End If
+End If
+
+End Sub
