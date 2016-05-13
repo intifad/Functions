@@ -1,0 +1,10 @@
+Sub List_Environment_Variables()
+Dim EnvString As String
+Dim indx As Long
+indx = 1
+Do
+    EnvString = Environ(indx)
+    Cells(indx, 1) = EnvString
+    indx = indx + 1
+Loop Until EnvString = ""
+End Sub
