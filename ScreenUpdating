@@ -1,11 +1,17 @@
-Sub ToggleScreenUpdating(sONOrOff As String)
+Public Enum TurnOnOFF
+    TurnOn
+    TurnOff
+End Enum
+
+
+Sub ToggleScreenUpdating(StateOnOff As TurnOnOff)
 
     With Application
-        Select Case sONOrOff
-            Case "ON"
+        Select Case StateOnOff
+            Case TurnOn
                 .ScreenUpdating = True
                 .Calculation = xlCalculationAutomatic
-            Case "OFF"
+            Case TurnOff
                 .ScreenUpdating = False
                 .Calculation = xlCalculationManual
         End Select
