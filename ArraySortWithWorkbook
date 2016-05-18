@@ -1,0 +1,26 @@
+Sub ArraySortViaWorksheet(Arr)
+    Dim WS As Worksheet ' temporary worksheet
+    Dim R As Range
+    Dim N As Long
+
+    ' create a new sheet
+    Set WS = ThisWorkbook.Worksheets.Add
+    
+    ' put the array values on the worksheet
+    Set R = WS.Range("A1").Resize(UBound(Arr) - LBound(Arr) + 1, 1)
+    R = Arr
+    
+    ' sort the range
+    R.Sort key1:=R, order1:=xlAscending, MatchCase:=False
+    
+    ' load the worksheet values back into the array
+    For N = 1 To R.Rows.Count
+        Arr(N) = R(N, 1)
+    Next N
+    
+    ' delete the temporary sheet
+    Application.DisplayAlerts = False
+    WS.Delete
+    Application.DisplayAlerts = True
+
+End Sub
