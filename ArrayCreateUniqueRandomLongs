@@ -1,0 +1,48 @@
+Public Function CreateArrayUniqueRandomLongs(Minimum As Long, Maximum As Long, Number As Long, Optional ArrayBase As Long = 1, Optional Dummy As Variant) As Variant
+
+Dim SourceArr() As Long
+Dim ResultArr() As Long
+Dim SourceNdx As Long
+Dim ResultNdx As Long
+Dim TopNdx As Long
+Dim Temp As Long
+
+If Minimum > Maximum Then
+    CreateArrayUniqueRandomLongs = Null
+    Exit Function
+End If
+If Number > (Maximum - Minimum + 1) Then
+    CreateArrayUniqueRandomLongs = Null
+    Exit Function
+End If
+If Number <= 0 Then
+    CreateArrayUniqueRandomLongs = Null
+    Exit Function
+End If
+
+Randomize
+
+ReDim SourceArr(Minimum To Maximum)
+ReDim ResultArr(ArrayBase To (ArrayBase + Number - 1))
+
+For SourceNdx = Minimum To Maximum
+    SourceArr(SourceNdx) = SourceNdx
+Next SourceNdx
+
+
+TopNdx = UBound(SourceArr)
+For ResultNdx = LBound(ResultArr) To UBound(ResultArr)
+
+    SourceNdx = Int((TopNdx - Minimum + 1) * Rnd + Minimum)
+    ResultArr(ResultNdx) = SourceArr(SourceNdx)
+
+    Temp = SourceArr(SourceNdx)
+    SourceArr(SourceNdx) = SourceArr(TopNdx)
+    SourceArr(TopNdx) = Temp
+
+    TopNdx = TopNdx - 1
+Next ResultNdx
+
+CreateArrayUniqueRandomLongs = ResultArr
+
+End Function
