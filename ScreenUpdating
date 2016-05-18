@@ -1,13 +1,13 @@
-Public Enum TurnOnOFF
+Public Enum StateOnOff
     TurnOn
     TurnOff
 End Enum
 
 
-Sub ToggleScreenUpdating(StateOnOff As TurnOnOff)
+Sub ToggleScreenUpdating(TurnOnOff As StateOnOff)
 
     With Application
-        Select Case StateOnOff
+        Select Case TurnOnOff
             Case TurnOn
                 .ScreenUpdating = True
                 .Calculation = xlCalculationAutomatic
