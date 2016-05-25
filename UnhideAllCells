@@ -1,0 +1,7 @@
+Sub UnhideAll(sheet As Worksheet)
+    sheet.Cells.EntireColumn.Hidden = False
+    sheet.Cells.EntireRow.Hidden = False
+    On Error Resume Next
+    sheet.ShowAllData
+    On Error GoTo 0
+End Sub
