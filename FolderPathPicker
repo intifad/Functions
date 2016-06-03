@@ -1,0 +1,22 @@
+Function ChooseFolderPath(Optional sTitle As String, Optional sDefaultPath As String) As String
+'##################################################################################################################
+'# Wojciech Dobrzycki                                                                                             #
+'# 2016-06-03                                                                                                     #
+'# Macro helps to choose special folder path     #
+'##################################################################################################################
+
+With Application.FileDialog(msoFileDialogFolderPicker)
+        .AllowMultiSelect = False
+        .Title = sTitle
+        .InitialFileName = sDefaultPath
+        .Show
+        If .SelectedItems.Count = 0 Then
+            MsgBox "You did not choose any folder"
+            ToggleScreenUpdating (TurnOn)
+            End
+        Else
+        ChooseFolderPath = .SelectedItems.Item(1)
+        End If
+    End With
+    
+End Function
