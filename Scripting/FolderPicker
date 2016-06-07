@@ -12,15 +12,13 @@ Function SelectFolder( myStartFolder )
     Set objFolder = objShell.BrowseForFolder( 0, "Select Folder", 0, myStartFolder )
 
      ' Return the path of the selected folder
-    If objfolder is nothing Then 
+    	If objfolder is nothing Then 
 		wscript.echo "You did not choose any folder!"
 		wscript.quit
 	Else
 		SelectFolder = objFolder.Self.Path
 	End if
 	
-	 
-
      ' Standard housekeeping
      Set objFolder = Nothing
      Set objshell  = Nothing
