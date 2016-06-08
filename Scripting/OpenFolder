@@ -1,0 +1,3 @@
+Dim shell
+ Set shell = wscript.CreateObject("Shell.Application")
+shell.Open "D:\FTE"
