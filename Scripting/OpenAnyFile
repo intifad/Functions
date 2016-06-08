@@ -1,0 +1,3 @@
+Dim shell
+ Set shell = CreateObject("wscript.shell")
+shell.run ("""D:\FTE\FTE Adjustment 2016.03.29.xlsm""")
