@@ -1,0 +1,39 @@
+Option Explicit
+Public Enum ColOrVariable
+    VariableName
+    LookedText
+End Enum
+
+
+Sub CreateColVariables(SheetObjectName As String)
+'##################################################################
+'Macro Created By Wojciech Dobrzycki 2016-06-10 for individual use
+'Macro Creates definitions and variable assignments
+'#################################################################
+Dim Cell As Range
+Dim i As Boolean
+Dim WhatInCell As ColOrVariable
+Dim sDimString As String
+Dim sFunctionAssignment As String
+Dim sVarName As String
+Dim sLookedText As String
+
+
+For Each Cell In Selection
+
+    If WhatInCell = VariableName Then
+        sDimString = sDimString & "Dim " & Cell.Value & " as Long" & vbNewLine
+        sVarName = Cell.Value
+        WhatInCell = LookedText ' since next looped cell will be looked text
+    ElseIf WhatInCell = LookedText Then
+        sLookedText = Cell.Value
+        sFunctionAssignment = sFunctionAssignment & sVarName & "=CellFind(" & SheetObjectName & ",""" & sLookedText & """, True).Column" & vbNewLine
+        WhatInCell = VariableName ' since next looped cell will be variable name
+    End If
+    
+Next
+
+Debug.Print sDimString & vbNewLine & sFunctionAssignment
+
+
+End Sub
