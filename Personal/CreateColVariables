@@ -1,10 +1,4 @@
-Option Explicit
-Public Enum ColOrVariable
-    VariableName
-    LookedText
-End Enum
-
-Sub CreateColVariables()
+OSub CreateColVariables()
 '######################################################################
 '## Macro Created By Wojciech Dobrzycki 2016-06-10 for individual use #
 '## Macro Creates definitions and variable assignments                #
@@ -17,23 +11,43 @@ Dim sDimString As String
 Dim sFunctionAssignment As String
 Dim sVarName As String
 Dim sLookedText As String
+Dim Module As VBComponent
+
+
+
+'Checking if number of selected cells is even
+If Selection.Cells.Count Mod 2 <> 0 Then
+    MsgBox "You have selected odd number of cells:"
+    End
+End If
+
 
 For Each Cell In Selection
-
     If WhatInCell = VariableName Then
+    
         sDimString = sDimString & "Dim " & Cell.Value & " as Long" & vbNewLine
         sVarName = Cell.Value
+        
+        'checking if variable name is in proper format
+        If sVarName Like "Col*" = False Then
+            MsgBox "Variable name does not starts with Col"
+            Stop
+        End If
+         
         WhatInCell = LookedText ' since next looped cell will be looked text
+        
     ElseIf WhatInCell = LookedText Then
         sLookedText = Cell.Value
         sFunctionAssignment = sFunctionAssignment & sVarName & "=CellFind(SheetObjectName,""" & sLookedText & """, True).Column" & vbNewLine
         WhatInCell = VariableName ' since next looped cell will be variable name
+        
     End If
-    
 Next
 
 Debug.Print sDimString & vbNewLine & sFunctionAssignment
 
+''In case I want to put code into active module in active workbook where variables are supposed to be working
+'ActiveWorkbook.VBProject.VBE.ActiveCodePane.CodeModule.AddFromString (sDimString & vbNewLine & sFunctionAssignment)
+
 
 End Sub
-
