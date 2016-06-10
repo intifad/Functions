@@ -1,4 +1,9 @@
-OSub CreateColVariables()
+Public Enum WhatInCell
+    VariableName
+    LookedText
+End Enum
+    
+Sub CreateColVariables()
 '######################################################################
 '## Macro Created By Wojciech Dobrzycki 2016-06-10 for individual use #
 '## Macro Creates definitions and variable assignments                #
