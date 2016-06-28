@@ -1,0 +1,21 @@
+Sub DeleteMissingItems2002All()
+'prevents unused items in non-OLAP PivotTables
+'pivot table tutorial by contextures.com
+Dim pt As PivotTable
+Dim ws As Worksheet
+Dim pc As PivotCache
+
+'change the settings
+For Each ws In ActiveWorkbook.Worksheets
+  For Each pt In ws.PivotTables
+    pt.PivotCache.MissingItemsLimit = xlMissingItemsNone
+  Next pt
+Next ws
+
+'refresh all the pivot caches
+For Each pc In ActiveWorkbook.PivotCaches
+  On Error Resume Next
+  pc.Refresh
+Next pc
+
+End Sub   
