@@ -1,0 +1,80 @@
+Option Explicit
+ 
+Const EMBED_ATTACHMENT As Long = 1454
+
+Const stPath As String = "c:\Attachments"
+
+Const stSubject As String = "Weekly report"
+
+Const vaMsg As Variant = "The weekly report as per agreement." & vbCrLf & _
+                                          "Kind regards," & vbCrLf & _
+                                           "Dennis"
+
+Const vaCopyTo As Variant = "name@mail.com"
+
+Sub Send_Active_Sheet()
+ 
+  Dim stFileName As String
+  Dim vaRecipients As Variant
+ 
+  Dim noSession As Object
+  Dim noDatabase As Object
+  Dim noDocument As Object
+  Dim noEmbedObject As Object
+  Dim noAttachment As Object
+  Dim stAttachment As String
+ 
+  'Copy the active sheet to a new temporarily workbook.
+  With ActiveSheet
+    .Copy
+    stFileName = .Range("A1").Value
+  End With
+ 
+  stAttachment = stPath & "\" & stFileName & ".xls"
+ 
+  'Save and close the temporarily workbook.
+  With ActiveWorkbook
+    .SaveAs stAttachment
+    .Close
+  End With
+ 
+  'Create the list of recipients.
+  vaRecipients = VBA.Array("name1@mail.com", "name1@mail.com")
+ 
+  'Instantiate the Lotus Notes COM's Objects.
+  Set noSession = CreateObject("Notes.NotesSession")
+  Set noDatabase = noSession.GETDATABASE("", "")
+ 
+  'If Lotus Notes is not open then open the mail-part of it.
+  If noDatabase.IsOpen = False Then noDatabase.OPENMAIL
+ 
+  'Create the e-mail and the attachment.
+  Set noDocument = noDatabase.CreateDocument
+  Set noAttachment = noDocument.CreateRichTextItem("stAttachment")
+  Set noEmbedObject = noAttachment.EmbedObject(EMBED_ATTACHMENT, "", stAttachment)
+ 
+  'Add values to the created e-mail main properties.
+  With noDocument
+    .Form = "Memo"
+    .SendTo = vaRecipients
+    .CopyTo = vaCopyTo
+    .Subject = stSubject
+    .Body = vaMsg
+    .SaveMessageOnSend = True
+    .PostedDate = Now()
+    .Send 0, vaRecipients
+  End With
+ 
+  'Delete the temporarily workbook.
+  Kill stAttachment
+ 
+  'Release objects from memory.
+  Set noEmbedObject = Nothing
+  Set noAttachment = Nothing
+  Set noDocument = Nothing
+  Set noDatabase = Nothing
+  Set noSession = Nothing
+ 
+  MsgBox "The e-mail has successfully been created and distributed", vbInformation
+ 
+End Sub
