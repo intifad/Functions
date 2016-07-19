@@ -1,0 +1,19 @@
+Sub ValidateTrustedAccessToVBAProjectModel()
+'Procedure checks if user has a trusted access to vba project model
+'Written by Wojciech Dobrzycki (325366)
+'2016-07-19
+
+Dim z As Long
+
+On Error Resume Next
+Err.Clear
+z = Application.VBE.VBProjects.Count
+If Err.Number <> 0 Then
+    MsgBox "You need to turn on trusted access to VBA project model!" & vbNewLine & _
+    "Go to:" & vbNewLine & "File->Options->Trust Center-> Trust Center Settings->Macro Settings" & vbNewLine & _
+    "And check checkbox ""Trust access to VBA project model"" ", vbInformation, "WARNING - PLEASE CHANGE SETTINGS"
+    End
+End If
+On Error GoTo 0
+
+End Sub
