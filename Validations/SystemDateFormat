@@ -1,0 +1,11 @@
+Sub ValidateDateFormat()
+Dim sTestDate As String
+sTestDate = CDate(42584) ' It should be a 2 august 2016
+
+If sTestDate <> "02/08/2016" Then
+    MsgBox "Please change short date format in region and language settings to dd/mm/yyyy", vbInformation, "WARNING - PLEASE CHANGE SETTINGS"
+    End
+End If
+
+Debug.Print sTestDate
+End Sub
