@@ -1,0 +1,16 @@
+Function GetFileNames(sTitle As String) As Variant
+Dim TempString As String
+Dim i As Long
+
+With Application.FileDialog(msoFileDialogOpen)
+    .InitialFileName = ThisWorkbook.Path
+    .AllowMultiSelect = True
+    .Title = sTitle
+    .Show
+    For i = 1 To .SelectedItems.Count
+        TempString = TempString & ",," & .SelectedItems(i)
+    Next i
+End With
+TempString = Mid(TempString, 3)
+GetFileNames = Split(TempString, ",,")
+End Function
