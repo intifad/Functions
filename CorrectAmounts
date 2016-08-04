@@ -1,0 +1,25 @@
+Sub CorrectAmounts(rngToCorrect As Range, iDecimalPlaces As Integer)
+'###################################################################################
+'## Macro Created By Wojciech Dobrzycki 2016-08-04                                 #
+'## Macro is able to corrrect wrongly formatted amounts                            #
+'###################################################################################
+Dim TempArr() As Variant
+Dim i As Long
+Dim j As Long
+
+
+TempArr = rngToCorrect.Value2
+
+For i = LBound(TempArr, 1) To UBound(TempArr, 1)
+    For j = LBound(TempArr, 2) To UBound(TempArr, 2)
+        If (IsNumeric(TempArr(i, j))) = False Then
+            TempArr(i, j) = Replace(TempArr(i, j), " ", "")
+            TempArr(i, j) = Replace(TempArr(i, j), ",", "")
+            TempArr(i, j) = Replace(TempArr(i, j), ".", "")
+            TempArr(i, j) = TempArr(i, j) / 10 ^ iDecimalPlaces
+        End If
+    Next j
+Next i
+
+rngToCorrect.Value2 = TempArr
+End Sub
