@@ -1,0 +1,55 @@
+Function ConvertToNumber(ByVal sInput As String) As Double
+Dim sInputRev As String
+Dim i As Long
+Dim sInputReverse As String
+''Developed By wojciech dobrzycki wojciech.dobrzycki@gmail.com
+'Function which role is to take number formatted as string and localize decimal separator if it exists and write back number
+'#################
+'ASSUMPTIONS:
+'!!!! Input string can have maximally 2 decimal places after separator. In case of 1,265 we are assuming to be equal to 1265 not 1.265000 !!!!!
+'Function does not work with space af input decimal separator (I have never seen such example in real life)
+'Input separators (decimals and thousand should be different)
+'"d" - temporary decimal separator
+'####################
+
+
+If InStr(1, sInput, ",") = 0 And InStr(1, sInput, ".") = 0 Then
+        sInput = Replace(sInput, " ", "")
+        ConvertToNumber = CDbl(sInput)
+        Exit Function
+End If
+
+sInput = Trim(sInput)
+'sdecimal = Application.DecimalSeparator
+
+If Left(sInput, 1) = "0" Then ' in that case we have only decimal separator within number
+    sInput = Replace(sInput, ",", Application.International(xlDecimalSeparator))
+    sInput = Replace(sInput, ".", Application.International(xlDecimalSeparator))
+    'ConvertToNumber = CDbl(sInput)
+     ConvertToNumber = sInput
+    Exit Function
+End If
+
+sInputRev = StrReverse(sInput)
+
+For i = 2 To 3
+    If Mid(sInputRev, i, 1) = "," Then
+        sInputRev = Replace(sInputRev, ",", "d", 1, 1)
+    ElseIf Mid(sInputRev, i, 1) = "." Then
+        sInputRev = Replace(sInputRev, ".", "d", 1, 1)
+    End If
+Next i
+
+sInput = StrReverse(sInputRev)
+
+'Removing thousands separators
+sInput = Replace(sInput, ",", "")
+sInput = Replace(sInput, ".", "")
+sInput = Replace(sInput, " ", "")
+'Replacing decimal separator
+sInput = Replace(sInput, "d", Application.International(xlDecimalSeparator))
+
+ConvertToNumber = CDbl(sInput)
+
+
+End Function
