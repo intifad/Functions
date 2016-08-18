@@ -1,0 +1,10 @@
+Function RandomNumbers(Lowest As Long, Highest As Long, Optional Decimals As Integer)
+   'Application.Volatile  'Remove this line to "freeze" the numbers
+   If IsMissing(Decimals) Or Decimals = 0 Then
+      Randomize
+      RandomNumbers = Int((Highest + 1 - Lowest) * Rnd + Lowest)
+   Else
+      Randomize
+      RandomNumbers = Round((Highest - Lowest) * Rnd + Lowest, Decimals)
+   End If
+End Function
