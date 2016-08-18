@@ -25,8 +25,7 @@ sInput = Trim(sInput)
 If Left(sInput, 1) = "0" Then ' in that case we have only decimal separator within number
     sInput = Replace(sInput, ",", Application.International(xlDecimalSeparator))
     sInput = Replace(sInput, ".", Application.International(xlDecimalSeparator))
-    'ConvertToNumber = CDbl(sInput)
-     ConvertToNumber = sInput
+    ConvertToNumber = CDbl(sInput)
     Exit Function
 End If
 
