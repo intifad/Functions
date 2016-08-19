@@ -1,0 +1,75 @@
+Sub PQcode2VBAcode() 
+ '--------------------------------------------------------------------------------------- 
+ ' Procedure : PQcode2VBAcode 
+ ' Author    : Artik 
+ ' Date      : 19.08.2016 
+ ' Purpose   : Konwersja kodu PQ do kodu VBA 
+ '--------------------------------------------------------------------------------------- 
+ ' 
+     Dim iFn         As Integer 
+     Dim strFilename As String 
+     Dim strLine     As String 
+     Dim strTmp      As String 
+     Dim strWynik    As String 
+
+     Dim strQt       As String 
+     Dim strDqt      As String 
+
+     strQt = Chr(34) 
+     strDqt = String(2, Chr(34)) 
+
+     strFilename = ThisWorkbook.Path & "\PQ Code.txt" 
+
+     If Dir(strFilename) = "" Then 
+         MsgBox "Brak pliku PQ Code.txt!", vbExclamation 
+         Exit Sub 
+     End If 
+
+     strWynik = "    Dim strFormula As String" & vbCrLf & vbCrLf 
+
+     iFn = FreeFile 
+
+     Open strFilename For Input As #iFn 
+
+     Do While Not EOF(iFn) 
+         Line Input #iFn, strLine 
+
+         strLine = Replace(strLine, strQt, strDqt) 
+
+         strTmp = """" & strLine & """" & " & vbLf" & vbCrLf 
+
+         strWynik = strWynik & "    strFormula =  strFormula & " & strTmp 
+     Loop 
+
+     Close #iFn 
+
+     strWynik = Left$(strWynik, Len(strWynik) - Len(" & vbLf") - 1) 
+
+     'Debug.Print strWynik 
+
+     Call Zapisz(ThisWorkbook.Path & "\VBA Code.txt", strWynik) 
+     Application.Wait Now + TimeSerial(0, 0, 1) 
+     Call OpenInNotepad(ThisWorkbook.Path & "\VBA Code.txt") 
+     Application.Wait Now + TimeSerial(0, 0, 1) 
+     Kill ThisWorkbook.Path & "\VBA Code.txt" 
+ End Sub 
+
+
+ Sub Zapisz(strFilename As String, strOutput As String) 
+     Dim iFn         As Integer 
+
+     iFn = FreeFile 
+
+     Open strFilename For Output Access Write As #iFn 
+
+     Print #iFn, strOutput 
+
+     Close #iFn 
+
+ End Sub 
+
+
+ Sub OpenInNotepad(strFilename As String) 
+     Dim MyTxtFile 
+     MyTxtFile = Shell("notepad.exe " & strFilename, 1) 
+ End Sub
