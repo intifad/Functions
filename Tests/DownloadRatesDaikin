@@ -1,0 +1,19 @@
+Sub test()
+
+Dim req As New WinHttpRequest
+Dim ht As New MSHTML.HTMLDocument
+Dim sResultURL As String
+
+
+
+req.Open "Get", "http://en.eu.intranet.eu.eur.daikintranet/departments/finance_accounting/exchange_rates.jsp"
+req.send
+Debug.Print req.Status
+
+
+ht.body.innerHTML = req.responseText
+
+
+sResultURL = Replace(ht.getElementsByClassName("link-xls").Item(, 0).href, "about:", "http://en.eu.intranet.eu.eur.daikintranet")
+DownloadFile sResultURL, "\\eu.daikin.corpnet\emeadfs1$\DENV\Personal\eu4723314142\Citrix\Desktop\Adriana\kk.xls"
+End Sub
