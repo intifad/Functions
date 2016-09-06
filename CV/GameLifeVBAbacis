@@ -1,0 +1,99 @@
+Sub GameLifeBasic()
+'Gra toczy sie na nieskonczonej planszy (plaszczyznie) (w tym przydaku w okreslonym zakresie podzielonym na kwadratowe komórki.
+'Kazda komórka ma osmiu „sasiadów” (tzw.sasiedztwo Moore’a), czyli komórki przylegajace do niej bokami i rogami.
+'Kazda komórka moze znajdowac sie w jednym z dwóch stanów: moze byc albo „zywa” (wlaczona), albo „martwa” (wylaczona).
+'Stany komórek zmieniaja sie w pewnych jednostkach czasu. Stan wszystkich komórek w pewnej jednostce czasu jest uzywany do obliczenia stanu wszystkich komórek w nastepnej jednostce.
+'Po obliczeniu wszystkie komórki zmieniaja swój stan dokladnie w tym samym momencie.
+'Stan komórki zalezy tylko od liczby jej zywych sasiadów. W grze w zycie nie ma graczy w doslownym tego slowa znaczeniu.
+'Udzial czlowieka sprowadza sie jedynie do ustalenia stanu poczatkowego komórek.
+
+Dim Board As Range
+Dim cell As Range
+Dim sAddress As String
+Dim x As Long
+Dim y As Long
+Dim xMaxBoard As Long
+Dim yMaxBoard As Long
+Dim xStart As Long
+Dim xEnd As Long
+Dim yStart As Long
+Dim yEnd As Long
+Dim NoLivingHood As Long
+Dim i As Long
+Dim j As Long
+Dim LastCell As Range
+
+
+Application.ScreenUpdating = False
+Set Board = shGameLife.Range("A1:Z50")
+Set LastCell = Board.Cells(Board.Cells.Count)
+
+xMaxBoard = GetCoordinateX(LastCell)
+yMaxBoard = GetCoordinateY(LastCell)
+
+'Used for 1st macro run
+For Each cell In Board
+    If cell.Interior.Color = vbBlack Then
+        cell.ID = "Life"
+    Else
+        cell.ID = "Dead"
+    End If
+Next cell
+
+For Each cell In Board
+    'get cell coordinates of current cell
+    x = GetCoordinateX(cell)
+    y = GetCoordinateY(cell)
+
+    'check surrounding
+    xStart = Application.Max(x - 1, 1)
+    xEnd = Application.Min(x + 1, xMaxBoard)
+    yStart = Application.Max(y - 1, 1)
+    yEnd = Application.Min(y + 1, yMaxBoard)
+    
+    NoLivingHood = 0
+    For i = xStart To xEnd
+        For j = yStart To yEnd
+            If i <> x Or j <> y Then
+                    If shGameLife.Cells(j, i).ID = "Life" Then
+                        NoLivingHood = NoLivingHood + 1
+                    End If
+            End If
+        Next j
+    Next i
+    
+    Select Case NoLivingHood
+        Case 3:
+            cell.ID = "Life"
+        Case 2:
+            'do nothing cell.interior.color = cell.interior.color
+        Case Else:
+            cell.ID = "Dead"
+    End Select
+     
+Next cell
+
+For Each cell In Board
+    If cell.ID = "Life" Then
+        cell.Interior.Color = vbBlack
+    ElseIf cell.ID = "Dead" Then
+        cell.Interior.Color = vbWhite
+    Else
+        cell.Interior.Color = vbRed 'in case of some error
+    End If
+Next cell
+
+Application.ScreenUpdating = True
+
+End Sub
+
+Function GetCoordinateX(rng As Range) As Long
+    Dim sAddress As String
+    sAddress = rng.Address(, , xlR1C1)
+    GetCoordinateX = Right(sAddress, Len(sAddress) - InStr(1, sAddress, "C"))
+End Function
+Function GetCoordinateY(rng As Range) As Long
+    Dim sAddress As String
+    sAddress = rng.Address(, , xlR1C1)
+    GetCoordinateY = Mid(sAddress, 2, InStr(1, sAddress, "C") - 2)
+End Function
