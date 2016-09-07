@@ -1,0 +1,31 @@
+Sub CorrectDates(rng As Range)
+'Funkcja sprawdza czy wartosci w zakresie sa datami lub liczbami. Jesli sa to nie zmienia ich jesli tak to patrzy czy
+'nie jest to przypatkiem data zapisana w formacie dd.mm.yyyy - jesli tak zamienia ja naprawidlowy format daty
+
+Dim tempArr() As Variant
+
+
+tempArr = rng.Value
+
+For i = LBound(tempArr, 1) To UBound(tempArr, 1)
+
+    If Trim(tempArr(i, 1)) Like "[0-9][0-9].[0-9][0-9].[0-9][0-9][0-9][0-9]" Then
+        
+        tempYear = CInt(Right(tempArr(i, 1), 4))
+        tempMonth = CInt(Mid(tempArr(i, 1), 4, 2))
+        tempDay = CInt(Left(tempArr(i, 1), 2))
+        tempArr(i, 1) = DateSerial(tempYear, tempMonth, tempDay)
+       
+    ElseIf IsDate(tempArr(i, 1)) = False And IsNumeric(tempArr(i, 1)) = False Then
+
+        MsgBox "Date format is not recognized!", vbCritical
+        Application.Calculation = xlCalculationAutomatic
+        Application.ScreenUpdating = True
+        End
+    End If
+            
+Next i
+
+rng.Value = tempArr
+
+End Sub
