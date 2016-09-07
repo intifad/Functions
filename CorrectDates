@@ -9,7 +9,7 @@ tempArr = rng.Value
 
 For i = LBound(tempArr, 1) To UBound(tempArr, 1)
 
-    If Trim(tempArr(i, 1)) Like "[0-9][0-9].[0-9][0-9].[0-9][0-9][0-9][0-9]" Then
+    If tempArr(i, 1) Like "[0-9][0-9].[0-9][0-9].[0-9][0-9][0-9][0-9]" Then
         
         tempYear = CInt(Right(tempArr(i, 1), 4))
         tempMonth = CInt(Mid(tempArr(i, 1), 4, 2))
