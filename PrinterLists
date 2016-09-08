@@ -1,0 +1,10 @@
+ Sub get_printers()
+
+ On Error Resume Next
+
+ Set WshNetwork = CreateObject("WScript.Network")
+ Set oPrinters = WshNetwork.EnumPrinterConnections
+ For i = 0 To oPrinters.Count - 1 Step 1
+     Cells(i + 1, 1) = "Port " & oPrinters.Item(i) & " = " & oPrinters.Item(i + 1)
+ Next
+ End Sub
