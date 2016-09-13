@@ -1,0 +1,18 @@
+Function CreateArray(rng As Range) As Variant
+Dim i As Long
+Dim cel As Range
+
+Dim arrTemp() As Variant
+
+i = 0
+ReDim arrTemp(rng.Cells.Count - 1)
+
+
+For Each cel In rng
+    arrTemp(i) = cel.Value
+    i = i + 1
+Next cel
+CreateArray = arrTemp
+
+
+End Function
