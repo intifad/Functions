@@ -1,0 +1,1 @@
+Function FindRow(sLookedValue, rngLooked) As LongOn Error Resume NextErr.ClearFindRow = WorksheetFunction.Match(sLookedValue, rngLooked, 0)If Err.Number <> 0 Then    FindRow = 0End IfOn Error GoTo 0
