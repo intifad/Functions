@@ -1,0 +1,39 @@
+Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+
+Sub GetPDFs(AdobeFile As String)
+ 
+Dim AdobeApp As String
+Dim Adobe
+Dim Lrow As Long
+
+AdobeApp = "C:\Program Files (x86)\Adobe\Reader 11.0\Reader\AcroRd32.exe"
+If InStr(1, AdobeFile, " ") > 0 Then
+    MsgBox "Unfortunately file path with spaces is not allowed, change foloowing path:" & vbNewLine & AdobeFile, vbExclamation
+    Call ToggleScreenUpdating(TurnOn)
+    End
+End If
+
+Adobe = Shell("" & AdobeApp & " " & AdobeFile & "", 1)
+DoEvents
+Sleep 5000
+SendKeys "^a", True
+Sleep 3000
+SendKeys "^c", True
+Sleep 2000
+AppActivate "Microsoft Excel"
+
+Lrow = shInput.Cells(Rows.Count, 1).End(xlUp).Row
+
+If ActiveSheet Is shInput = False Then
+    shInput.Activate
+End If
+
+shInput.Range("A" & Lrow).Select
+SendKeys "^v", True
+AppActivate "Adobe Reader"
+Sleep 1000
+SendKeys "%{F4}"
+Sleep 1000
+
+DoEvents
+End Sub
