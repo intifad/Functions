@@ -3,6 +3,10 @@ Sub CorrectDates(rng As Range)
 'nie jest to przypatkiem data zapisana w formacie dd.mm.yyyy - jesli tak zamienia ja naprawidlowy format daty
 
 Dim tempArr() As Variant
+Dim i As Long
+Dim tempYear As Long
+Dim tempMonth As Long
+Dim tempDay As Long
 
 
 tempArr = rng.Value
