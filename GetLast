@@ -1,0 +1,15 @@
+Function GetLastRow(sh As Worksheet, col As Long) As Long
+
+With sh
+    GetLastRow = .Cells(.Rows.Count, col).End(xlUp).Row
+End With
+
+End Function
+
+Function GetLastCol(sh As Worksheet, Row As Long) As Long
+
+With sh
+    GetLastCol = .Cells(Row, .Columns.Count).End(xlToLeft).Column
+End With
+
+End Function
