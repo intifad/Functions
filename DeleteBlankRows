@@ -1,0 +1,22 @@
+Sub DeleteEmptyRows(rng As Range)
+'Deletes the entire row within the given range if the ENTIRE row contains no data.
+
+Dim Rw As Range
+Dim i As Long
+
+
+If WorksheetFunction.CountA(rng) = 0 Then
+   MsgBox "No data found!", vbExclamation
+   Call ToggleScreenUpdating(TurnOn)
+   End
+End If
+
+For i = rng.Rows.Count To 1 Step -1
+  
+    If WorksheetFunction.CountA(rng.Rows(i)) = 0 Then
+         rng.Rows(i).EntireRow.Delete
+    End If
+Next
+
+
+End Sub
