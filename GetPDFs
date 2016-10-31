@@ -37,3 +37,37 @@ Sleep 1000
 
 DoEvents
 End Sub
+
+Sub GetPDFs2(AdobeFilePath As String)
+ 
+Dim Lrow As Long
+Dim oShell As Object
+
+Set oShell = CreateObject("Wscript.Shell")
+
+AdobeFilePath = """" & AdobeFilePath & """"
+
+oShell.Run (AdobeFilePath)
+DoEvents
+Sleep 2000
+SendKeys "^a", True
+Sleep 700
+SendKeys "^c", True
+Sleep 1000
+
+AppActivate "Microsoft Excel"
+Lrow = shInput.Cells(Rows.Count, 1).End(xlUp).Row
+
+If ActiveSheet Is shInput = False Then
+    shInput.Activate
+End If
+
+shInput.Range("A" & Lrow).Select
+SendKeys "^v", True
+AppActivate "Adobe Reader"
+Sleep 500
+SendKeys "%{F4}"
+Sleep 500
+
+DoEvents
+End Sub
