@@ -1,4 +1,4 @@
-unction CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, ParamArray Cols()) As Dictionary
+Function CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, ParamArray Cols()) As Dictionary
 
 Dim sKey As String
 Dim sValue As String
