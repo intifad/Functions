@@ -1,0 +1,58 @@
+unction CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, ParamArray Cols()) As Dictionary
+
+Dim sKey As String
+Dim sValue As String
+Dim SplitIndex As Long
+Dim arrColKey()
+Dim arrColVal()
+Dim dictHelp As New Dictionary
+Dim i As Long
+Dim j As Long
+Dim bKey As Boolean
+
+'/Sizing arrays used to store columns numbers for keys and values
+SplitIndex = WorksheetFunction.Match("x", Cols, 0) - 1 '-1 since function gives index as Base=1, but Base for an array is 0
+ReDim arrColKey(SplitIndex - 1)
+ReDim arrColVal(UBound(Cols) - SplitIndex - 1)
+'//
+
+'/Columns for keys
+For i = LBound(Cols) To SplitIndex - 1
+    arrColKey(i) = Cols(i)
+Next i
+'//
+
+'/Columns for Values
+j = LBound(arrColVal)
+For i = SplitIndex + 1 To UBound(Cols)
+    arrColVal(j) = Cols(i)
+    j = j + 1
+Next i
+'//
+
+'/Creating dictionary
+With wks
+    For i = StartRow To EndRow
+        sKey = ""
+        For j = LBound(arrColKey) To UBound(arrColKey)
+            sKey = sKey & "***" & .Cells(i, arrColKey(j))
+        Next j
+        sKey = Mid(sKey, 1, Len(sKey) - 3) 'cuts last ***
+           
+        sValue = ""
+        For j = LBound(arrColVal) To UBound(arrColVal)
+            sValue = sValue & "***" & .Cells(i, arrColVal(j))
+        Next j
+        
+        sValue = Mid(sValue, 1, Len(sValue) - 3) 'cuts last ***
+            
+        If dictHelp.Exists(sKey) = False Then
+            dictHelp.Add sKey, sValue
+        End If
+    Next i
+End With
+'//
+
+Set CreateDictionaryX = dictHelp
+
+End Function
