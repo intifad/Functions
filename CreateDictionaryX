@@ -1,7 +1,8 @@
-Function CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, ParamArray Cols()) As Dictionary
+Function CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, bString As Boolean, ParamArray Cols()) As Dictionary
 
 Dim sKey As String
 Dim sValue As String
+Dim sinValue As Single
 Dim SplitIndex As Long
 Dim arrColKey()
 Dim arrColVal()
@@ -30,28 +31,55 @@ For i = SplitIndex + 1 To UBound(Cols)
 Next i
 '//
 
-'/Creating dictionary
-With wks
-    For i = StartRow To EndRow
-        sKey = ""
-        For j = LBound(arrColKey) To UBound(arrColKey)
-            sKey = sKey & "***" & .Cells(i, arrColKey(j))
-        Next j
-        sKey = Mid(sKey, 1, Len(sKey) - 3) 'cuts last ***
-           
-        sValue = ""
-        For j = LBound(arrColVal) To UBound(arrColVal)
-            sValue = sValue & "***" & .Cells(i, arrColVal(j))
-        Next j
-        
-        sValue = Mid(sValue, 1, Len(sValue) - 3) 'cuts last ***
+'#Definign type of dictionary, does it contain strings or values
+If bString Then
+    '/Creating dictionary for values as Strings
+    With wks
+        For i = StartRow To EndRow
+            sKey = ""
+            For j = LBound(arrColKey) To UBound(arrColKey)
+                sKey = sKey & "***" & .Cells(i, arrColKey(j))
+            Next j
+            sKey = Mid(sKey, 4, Len(sKey))  'cuts first ***
+               
+            sValue = ""
+            For j = LBound(arrColVal) To UBound(arrColVal)
+                sValue = sValue & "***" & .Cells(i, arrColVal(j))
+            Next j
             
-        If dictHelp.Exists(sKey) = False Then
-            dictHelp.Add sKey, sValue
-        End If
-    Next i
-End With
-'//
+            sValue = Mid(sValue, 4, Len(sValue))  'cuts first ***
+                
+            If dictHelp.Exists(sKey) = False Then
+                dictHelp.Add sKey, sValue
+            End If
+        Next i
+    End With
+    '//
+Else
+    '/Creating dictionary for values as longs (sums)
+    With wks
+        For i = StartRow To EndRow
+            sKey = ""
+            For j = LBound(arrColKey) To UBound(arrColKey)
+                sKey = sKey & "***" & .Cells(i, arrColKey(j))
+            Next j
+            sKey = Mid(sKey, 4, Len(sKey)) 'cuts  first ****
+               
+            sinValue = 0
+            For j = LBound(arrColVal) To UBound(arrColVal)
+                sinValue = sinValue + .Cells(i, arrColVal(j))
+            Next j
+                
+            If dictHelp.Exists(sKey) = False Then
+                dictHelp.Add sKey, sinValue
+            Else
+                dictHelp(sKey) = dictHelp(sKey) + sinValue
+            End If
+        Next i
+    End With
+    '//
+End If
+'##
 
 Set CreateDictionaryX = dictHelp
 
