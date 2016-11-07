@@ -1,7 +1,7 @@
 Function CreateDictionaryX(wks As Worksheet, StartRow As Long, EndRow As Long, bString As Boolean, ParamArray Cols()) As Dictionary
 
 Dim sKey As String
-Dim sValue As String
+Dim DictValue As clDictValues
 Dim sinValue As Single
 Dim SplitIndex As Long
 Dim arrColKey()
@@ -36,21 +36,25 @@ If bString Then
     '/Creating dictionary for values as Strings
     With wks
         For i = StartRow To EndRow
+            Set DictValue = New clDictValues
             sKey = ""
             For j = LBound(arrColKey) To UBound(arrColKey)
                 sKey = sKey & "***" & .Cells(i, arrColKey(j))
             Next j
             sKey = Mid(sKey, 4, Len(sKey))  'cuts first ***
                
-            sValue = ""
+            DictValue.sDictValue = ""
             For j = LBound(arrColVal) To UBound(arrColVal)
-                sValue = sValue & "***" & .Cells(i, arrColVal(j))
+                DictValue.sDictValue = DictValue.sDictValue & "***" & .Cells(i, arrColVal(j))
             Next j
             
-            sValue = Mid(sValue, 4, Len(sValue))  'cuts first ***
-                
+            DictValue.sDictValue = Mid(DictValue.sDictValue, 4, Len(DictValue.sDictValue))  'cuts first ***
+            DictValue.NoRow = i
             If dictHelp.Exists(sKey) = False Then
-                dictHelp.Add sKey, sValue
+                dictHelp.Add sKey, DictValue
+                dictHelp(sKey).lDuplicates = 1
+            Else
+                dictHelp(sKey).lDuplicates = dictHelp(sKey).lDuplicates + 1
             End If
         Next i
     End With
@@ -59,21 +63,26 @@ Else
     '/Creating dictionary for values as longs (sums)
     With wks
         For i = StartRow To EndRow
+        Set DictValue = New clDictValues
+            Set DictValue = New clDictValues
             sKey = ""
             For j = LBound(arrColKey) To UBound(arrColKey)
                 sKey = sKey & "***" & .Cells(i, arrColKey(j))
             Next j
             sKey = Mid(sKey, 4, Len(sKey)) 'cuts  first ****
                
-            sinValue = 0
+            DictValue.dblDictValue = 0
             For j = LBound(arrColVal) To UBound(arrColVal)
-                sinValue = sinValue + .Cells(i, arrColVal(j))
+                DictValue.dblDictValue = DictValue.dblDictValue + .Cells(i, arrColVal(j)).Value2
             Next j
-                
+            
+            DictValue.NoRow = i
             If dictHelp.Exists(sKey) = False Then
-                dictHelp.Add sKey, sinValue
+                dictHelp.Add sKey, DictValue
+                dictHelp(sKey).lDuplicates = 1
             Else
-                dictHelp(sKey) = dictHelp(sKey) + sinValue
+                dictHelp(sKey).dblDictValue = dictHelp(sKey).dblDictValue + DictValue.dblDictValue
+                dictHelp(sKey).lDuplicates = dictHelp(sKey).lDuplicates + 1
             End If
         Next i
     End With
