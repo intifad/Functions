@@ -1,0 +1,3 @@
+Public Function CountCharacter(ByVal MyString As String, ByVal LookingFor As String) As Long
+    CountCharacter = Len(MyString) - Len(Replace(MyString, LookingFor, ""))
+End Function
