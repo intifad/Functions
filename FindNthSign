@@ -1,0 +1,12 @@
+Function FindNthSign(sString As String, sSign As String, lNo As Long) As Long
+Dim lHelp As Long, i, x%: lHelp =0 
+If InStr(1, sString, sSign) Then 
+    i = Split(sString, sSign) 
+    If UBound(i) >= lNo Then 
+        For x = 0 To lNo - 1 
+           lHelp = lHelp + Len(i(x)) + 1 
+        Next 
+    End If 
+End If 
+FindSign3 = lHelp 
+End Function
