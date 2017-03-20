@@ -1,0 +1,32 @@
+Sub LogActivity(sDatabasePath As String, sTableName As String, ParamArray Arguments())
+'Arguments - firstly name of the field in database, later on its value
+
+Dim cn As New ADODB.Connection
+Dim rs As New ADODB.Recordset
+Dim i As Long
+
+cn.Open "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" & sDatabasePath & ";"
+rs.Open sTableName, cn, adOpenForwardOnly, adLockBatchOptimistic
+
+If (UBound(Arguments) - LBound(Arguments) + 1) Mod 2 <> 0 Then
+    Debug.Print "Wrong (odd) number of arguments!!"
+    Stop
+End If
+
+With rs
+    .AddNew
+    .Fields("UserName") = Application.UserName
+    .Fields("MacroVersion") = ThisWorkbook.BuiltinDocumentProperties("Document Version")
+    For i = LBound(Arguments) To UBound(Arguments) Step 2
+        .Fields(Arguments(i)).Value = Arguments(i + 1)
+    Next i
+    .Update
+End With
+
+rs.Close
+cn.Close
+
+Set rs = Nothing
+Set cn = Nothing
+
+End Sub
