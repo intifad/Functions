@@ -1,8 +1,8 @@
 Sub LogActivity(sDatabasePath As String, sTableName As String, ParamArray Arguments())
 'Arguments - firstly name of the field in database, later on its value
 
-Dim cn As New ADODB.Connection
-Dim rs As New ADODB.Recordset
+Dim cn As ADODB.Connection
+Dim rs As ADODB.Recordset
 Dim i As Long
 
 If Dir(sDatabasePath) = "" Then
@@ -10,8 +10,11 @@ If Dir(sDatabasePath) = "" Then
     Exit Sub
 End If
 
+Set cn = New ADODB.Connection
+Set rs = New ADODB.Recordset
+
 cn.Open "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" & sDatabasePath & ";"
-rs.Open sTableName, cn, adOpenForwardOnly, adLockBatchOptimistic
+rs.Open sTableName, cn, adOpenDynamic, adLockOptimistic, adCmdTable
 
 If (UBound(Arguments) - LBound(Arguments) + 1) Mod 2 <> 0 Then
     Debug.Print "Wrong (odd) number of arguments!!"
