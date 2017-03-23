@@ -5,6 +5,11 @@ Dim cn As New ADODB.Connection
 Dim rs As New ADODB.Recordset
 Dim i As Long
 
+If Dir(sDatabasePath) = "" Then
+    MsgBox "You have no access to database path!" & vbNewLine & "Call developer!" & vbNewLine & vbNewLine & "Macro will proceed but its activity will not be registered in db", vbInformation
+    Exit Sub
+End If
+
 cn.Open "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" & sDatabasePath & ";"
 rs.Open sTableName, cn, adOpenForwardOnly, adLockBatchOptimistic
 
