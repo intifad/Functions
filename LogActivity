@@ -10,7 +10,7 @@ If Dir(sDatabasePath) = "" Then
     Exit Sub
 End If
 
-cn.Open "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" & sDatabasePath & ";"
+cn.Open "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" & sDatabasePath & ";"
 rs.Open sTableName, cn, adOpenForwardOnly, adLockBatchOptimistic
 
 If (UBound(Arguments) - LBound(Arguments) + 1) Mod 2 <> 0 Then
