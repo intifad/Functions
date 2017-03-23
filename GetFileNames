@@ -6,4 +6,6 @@ If vHelp = False Then    MsgBox "You did not choose any file!", vbCritical �
     ToggleScreenUpdating (TurnOn)    
     End
 End If
+GetFileNames=vhelp
 End Function
+
