@@ -1,16 +1,9 @@
-Function GetFileNames(sTitle As String) As Variant
-Dim TempString As String
-Dim i As Long
-
-With Application.FileDialog(msoFileDialogOpen)
-    .InitialFileName = ThisWorkbook.Path
-    .AllowMultiSelect = True
-    .Title = sTitle
-    .Show
-    For i = 1 To .SelectedItems.Count
-        TempString = TempString & ",," & .SelectedItems(i)
-    Next i
-End With
-TempString = Mid(TempString, 3)
-GetFileNames = Split(TempString, ",,")
+Function GetFileNames(sTitle As String, Optional sDefaultPath As String) As Variant
+Dim vHelp As Variant
+vHelp = Application.GetOpenFilename(, , sTitle, , True)
+ChDir (sDefaultPath)
+If vHelp = False Then    MsgBox "You did not choose any file!", vbCritical    
+    ToggleScreenUpdating (TurnOn)    
+    End
+End If
 End Function
