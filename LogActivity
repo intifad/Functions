@@ -28,6 +28,7 @@ With rs
     .AddNew
     .Fields("UserName") = Application.UserName
     .Fields("SubName") = sActivityName
+    .Fields("FileLocalization") = ThisWorkbook.Path
     .Fields("Comments") = sComments
     .Fields("MacroVersion") = ThisWorkbook.BuiltinDocumentProperties("Title")
     For i = LBound(Arguments) To UBound(Arguments) Step 2
