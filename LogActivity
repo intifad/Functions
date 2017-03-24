@@ -1,4 +1,4 @@
-Sub LogActivity(sDatabasePath As String, sTableName As String, sActivityName As String, ParamArray Arguments())
+Sub LogActivity(sDatabasePath As String, sTableName As String, sActivityName As String, sComments As String, ParamArray Arguments())
 'Arguments - firstly name of the field in database, later on its value
 
 Dim cn As ADODB.Connection
@@ -28,6 +28,7 @@ With rs
     .AddNew
     .Fields("UserName") = Application.UserName
     .Fields("SubName") = sActivityName
+    .Fields("Comments") = sComments
     .Fields("MacroVersion") = ThisWorkbook.BuiltinDocumentProperties("Title")
     For i = LBound(Arguments) To UBound(Arguments) Step 2
         .Fields(Arguments(i)).Value = Arguments(i + 1)
