@@ -10,6 +10,9 @@ If Dir(sDatabasePath) = "" Then
     Exit Sub
 End If
 
+If sDatabasePath = "" Then sDatabasePath = "X:\Excel\SAPscript.accdb"
+If sTableName = "" Then sTableName = "MacroExecutions"
+
 Set cn = New ADODB.Connection
 Set rs = New ADODB.Recordset
 
