@@ -12,13 +12,14 @@ TempArr = rngToCorrect.Value2
 
 For i = LBound(TempArr, 1) To UBound(TempArr, 1)
     For j = LBound(TempArr, 2) To UBound(TempArr, 2)
-        If (worksheetfunction.isnumber(TempArr(i, j))) = False Then
+        If (WorksheetFunction.IsNumber(TempArr(i, j))) = False Then
             TempArr(i, j) = Replace(TempArr(i, j), " ", "")
             TempArr(i, j) = Replace(TempArr(i, j), ",", "")
             TempArr(i, j) = Replace(TempArr(i, j), ".", "")
-            if worksheetfunction.isnumber(Temparr(i,j)) Then
+            
+            If IsNumeric(TempArr(i, j)) Then
                 TempArr(i, j) = TempArr(i, j) / 10 ^ iDecimalPlaces
-            end if
+            End If
         End If
     Next j
 Next i
