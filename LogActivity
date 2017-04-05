@@ -5,13 +5,15 @@ Dim cn As ADODB.Connection
 Dim rs As ADODB.Recordset
 Dim i As Long
 
+If sDatabasePath = "" Then sDatabasePath = "X:\Excel\SAPscript.accdb"
+If sTableName = "" Then sTableName = "MacroExecutions"
+
 If Dir(sDatabasePath) = "" Then
     MsgBox "You have no access to database path!" & vbNewLine & "Call developer!" & vbNewLine & vbNewLine & "Macro will proceed but its activity will not be registered in db", vbInformation
     Exit Sub
 End If
 
-If sDatabasePath = "" Then sDatabasePath = "X:\Excel\SAPscript.accdb"
-If sTableName = "" Then sTableName = "MacroExecutions"
+
 
 Set cn = New ADODB.Connection
 Set rs = New ADODB.Recordset
