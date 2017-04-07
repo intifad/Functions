@@ -6,6 +6,7 @@ Dim rs As ADODB.Recordset
 Dim i As Long
 
 If sDatabasePath = "" Then sDatabasePath = "X:\Excel\SAPscript.accdb"
+If Dir(sDatabasePath) = "" Then sDatabasePath = "W:\_EMEA\Restricted\99 INFOSYS\Test\SAPscript.accdb"
 If sTableName = "" Then sTableName = "MacroExecutions"
 
 If Dir(sDatabasePath) = "" Then
