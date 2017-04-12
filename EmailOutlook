@@ -1,5 +1,7 @@
+Option Explicit
+
 Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
-    ByVal Subject As String, Optional zalacznik As Variant, Optional Range_To_Send As Variant, Optional defferedtime As Date)
+    ByVal Subject As String, sBodyText As String, Optional sAttachment As String, Optional rngToSend As Variant)
     
   Dim FSO As Object
   Dim HTMLcode As String
@@ -9,9 +11,8 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
   Dim rng As Range
   Dim TempFile As String
   Dim wks As Worksheet
-  Dim SendDisplay As Integer
-    SendDisplay = ThisWorkbook.Sheets(1).Range("J2").Value
-  
+  Dim olEmail As Object
+  Dim Signature
 
   Const ForReading As Long = 1
   Const olMailItem = 0
@@ -20,31 +21,32 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
     
      On Error GoTo CleanUp
      
-     If IsMissing(Range_To_Send) Then
+     If IsMissing(rngToSend) Then
         Set rng = Selection
      Else
-        Select Case TypeName(Range_To_Send)
+        Select Case TypeName(rngToSend)
           Case Is = "Range"
-              Set rng = Range_To_Send
+              Set rng = rngToSend
           Case Is = "String"
-              Set rng = Evaluate(Range_To_Send)
+              Set rng = Evaluate(rngToSend)
           Case Else
               MsgBox "Your Selection is Not a Valid Range."
               GoTo CleanUp
         End Select
      End If
-     
+    
      ' Copy the worksheet to create a new workbook
-       Set wks = rng.Parent
-       wks.Copy
-     
+       Set wks = Workbooks.Add.Sheets(1)
+       rng.SpecialCells(xlCellTypeVisible).Copy wks.Cells(1, 1)
+       Set rng = wks.Cells(1, 1).CurrentRegion
+       wks.Columns.AutoFit
      ' The new workbook will be saved to the user's Temp directoy
        TempFile = Environ("Temp") & "\" & wks.Name & ".htm"
      
      ' If a file by this exists then delete it
        If Dir(TempFile) <> "" Then Kill TempFile
      
-         ' Start Outlook
+         ' Get Outlook
            Set olApp = CreateObject("Outlook.Application")
       
          ' Convert the Message worksheet into HTML
@@ -70,28 +72,33 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
          ' Re-align the HTML code to the left side of the page
            HTMLcode = Replace(HTMLcode, "align=center x:publishsource=", _
                               "align=left x:publishsource=")
-              Dim hoho As String
-              hoho = "   zzz "
+
          ' Compose and send the email
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
-           .display
+                .Display
+                Signature = .HTMLBody
            End With
-           Signature = olEmail.HTMLBody
+           
            
              With olEmail
                .To = Recipient
                .CC = RecipientCC
                .Subject = Subject
                .BodyFormat = olFormatHTML
-               .HTMLBody = HTMLcode & "<br>" & Signature
-               .Attachments.Add (zalacznik)
-               .deferreddeliverytime = defferedtime
-               If SendDisplay = 1 Then .Send Else .display
+               .HTMLBody = sBodyText & HTMLcode & Signature
+               'Adding attachments - deliverd as a list with commas as list separators
+               If vAttachments <> "" Then
+                    vAttachments = Split(vAttachments, ",")
+                    For i = LBound(vAttachments) To UBound(vAttachments)
+                        If vAttachments(i) <> "" Then
+                            .Attachments.Add Trim(vAttachments(i))
+                        End If
+                    Next i
+                End If
+               .Display
              End With
-            
-   ' Exit Outlook
-   '  olApp.Quit
+
             
 CleanUp:
    ' Did an error occur
@@ -116,3 +123,4 @@ CleanUp:
      Set FSO = Nothing
 
 End Sub
+
