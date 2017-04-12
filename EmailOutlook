@@ -1,7 +1,7 @@
 Option Explicit
 
 Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
-    ByVal Subject As String, sBodyText As String, Optional sAttachment As String, Optional rngToSend As Variant)
+    ByVal Subject As String, sBodyText As String, Optional sAttachments As String, Optional rngToSend As Variant)
     
   Dim FSO As Object
   Dim HTMLcode As String
@@ -13,7 +13,10 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
   Dim wks As Worksheet
   Dim olEmail As Object
   Dim Signature
-
+  Dim vAttachments As Variant
+    Dim i As Long
+    
+    
   Const ForReading As Long = 1
   Const olMailItem = 0
   Const olFormatHTML = 2
@@ -77,27 +80,22 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
                 .Display
-                Signature = .HTMLBody
-           End With
-           
-           
-             With olEmail
-               .To = Recipient
-               .CC = RecipientCC
-               .Subject = Subject
-               .BodyFormat = olFormatHTML
-               .HTMLBody = sBodyText & HTMLcode & Signature
-               'Adding attachments - deliverd as a list with commas as list separators
-               If vAttachments <> "" Then
-                    vAttachments = Split(vAttachments, ",")
-                    For i = LBound(vAttachments) To UBound(vAttachments)
-                        If vAttachments(i) <> "" Then
-                            .Attachments.Add Trim(vAttachments(i))
-                        End If
-                    Next i
-                End If
-               .Display
-             End With
+                 Signature = .HTMLBody
+                .To = Recipient
+                .CC = RecipientCC
+                .Subject = Subject
+                .BodyFormat = olFormatHTML
+                .HTMLBody = sBodyText & HTMLcode & Signature
+                'Adding attachments - deliverd as a list with *** as list separators
+                If sAttachments <> "" Then
+                     vAttachments = Split(vAttachments, "***")
+                     For i = LBound(vAttachments) To UBound(vAttachments)
+                         If vAttachments(i) <> "" Then
+                             .Attachments.Add Trim(vAttachments(i))
+                         End If
+                     Next i
+                 End If
+            End With
 
             
 CleanUp:
