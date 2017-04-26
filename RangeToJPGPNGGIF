@@ -1,0 +1,11 @@
+Sub RangeToJPGPNGGIF(myRange As Range, ByVal filename As String) 
+ Dim ext As String 
+     ext = LCase(Mid(filename, InStrRev(filename, ".") + 1)) 
+     If (ext <> "jpg") And (ext <> "png") And (ext <> "gif") Then Exit Sub 
+     myRange.CopyPicture 
+     With myRange.Parent.ChartObjects.Add(myRange.left, myRange.top, myRange.Width, myRange.Height) 
+         .Activate 
+         .Chart.Paste 
+         .Chart.Export filename, ext 
+         .Delete 
+     End With
