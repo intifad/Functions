@@ -1,0 +1,49 @@
+Option Explicit 
+
+ Private Declare Function GetTempFileNameA Lib "Kernel32" _ 
+                                           (ByVal lpszPath As String, ByVal lpPrefixString As String, _ 
+                                            ByVal wUnique As Long, ByVal lpTempFileName As String) As Long 
+ Private Declare Function OpenClipboard Lib "User32" _ 
+                                        (ByVal hwnd As Long) As Long 
+ Private Declare Function CloseClipboard Lib "User32" () As Long 
+ Private Declare Function GetClipboardData Lib "User32" _ 
+                                           (ByVal uFormat As Long) As Long 
+ Private Declare Function CopyEnhMetaFileA Lib "Gdi32" _ 
+                                           (ByVal hemfSrc As Long, ByVal lpszFile As String) As Long 
+ Private Declare Function DeleteEnhMetaFile Lib "Gdi32" _ 
+                                            (ByVal hdc As Long) As Long 
+
+
+
+ Private Function FichierTemp(Optional ByVal Chemin As String) As String 
+     If Chemin = "" Then Chemin = Environ("TMP") 
+     FichierTemp = Space$(160) 
+     GetTempFileNameA Chemin, "", 0, FichierTemp 
+     FichierTemp = Left$(FichierTemp, InStr(FichierTemp, vbNullChar) - 1) 
+ End Function 
+
+
+ Function CopieFichierEMF(Objet As Object, _ 
+                          Optional NomFichier, Optional Apparence, _ 
+                          Optional Format, Optional Taille) As String 
+
+     If IsMissing(NomFichier) Then 
+         CopieFichierEMF = FichierTemp 
+     Else 
+         CopieFichierEMF = NomFichier 
+     End If 
+
+     If TypeName(Objet.Parent) = "Chart" Then 
+         Objet.Parent.CopyPicture Apparence, Format, Taille 
+     ElseIf TypeName(Objet) <> "Chart" Then 
+         Objet.CopyPicture Apparence, Format 
+     Else 
+         Objet.CopyPicture Apparence, Format, Taille 
+     End If 
+
+     OpenClipboard 0 
+
+     If DeleteEnhMetaFile(CopyEnhMetaFileA(GetClipboardData(14), _ 
+                                           CopieFichierEMF)) = 0 Then CopieFichierEMF = "" 
+     CloseClipboard 
+ End Function
