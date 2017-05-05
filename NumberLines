@@ -1,0 +1,91 @@
+Sub SetLineNr()     
+     Dim vbCodeModule As Object 'VBIDE.CodeModule     
+     Dim i As Long     
+          
+     On Error GoTo SetLineNr_Error     
+          
+     Dim iNr As Long: iNr = 10     
+          
+     Set vbCodeModule = ThisWorkbook.VBProject.VBComponents("Module2").CodeModule     
+     With vbCodeModule     
+         For i = .CountOfDeclarationLines + 1 To .CountOfLines     
+             Dim strLine As String: strLine = VBA.Trim(.Lines(i, 1))     
+                  
+             If Len(strLine) > 0 Then     
+                  
+                 If strLine Like "Sub * _" Or _     
+                    strLine Like "Function * _" Or _     
+                    strLine Like "Public Sub * _" Or _     
+                    strLine Like "Public Function * _" Or _     
+                    strLine Like "Private Sub * _" Or _     
+                    strLine Like "Private Function * _" Then     
+                     Do     
+                         i = i + 1     
+                         strLine = VBA.Trim(.Lines(i, 1))     
+                         If Not strLine Like "* _" Then     
+                             i = i + 1     
+                             Exit Do     
+                         End If     
+                     Loop     
+                 End If     
+                  
+                 strLine = VBA.Trim(.Lines(i, 1))     
+                      
+                 If Not (strLine Like "Dim *" Or _     
+                         strLine Like "Const *" Or _     
+                         strLine Like "Static *" Or _     
+                         strLine Like "*:" Or _     
+                         strLine Like "'*" Or _     
+                         Len(strLine) = 0) Or _     
+                   (strLine Like "Dim *:*") Then     
+          
+                     If strLine Like "Sub *" Or _     
+                        strLine Like "Function *" Or _     
+                        strLine Like "Public Sub *" Or _     
+                        strLine Like "Public Function *" Or _     
+                        strLine Like "Private Sub *" Or _     
+                        strLine Like "Private Function *" Then     
+          
+                         iNr = 10     
+          
+                     ElseIf strLine = "End Sub" Or _     
+                            strLine = "End Function" Then     
+                                 
+                         iNr = 0     
+                              
+                     Else     
+                         Dim bFlagA As Boolean     
+          
+                         If strLine Like "* _" Then bFlagA = True     
+          
+                         strLine = iNr & .Lines(i, 1)     
+                         .DeleteLines i, 1     
+                         .InsertLines i, strLine     
+                              
+                         If bFlagA Then     
+                             Do     
+                                 i = i + 1     
+                                 strLine = VBA.Trim(.Lines(i, 1))     
+                                 If Not strLine Like "* _" Then Exit Do     
+                             Loop     
+                             bFlagA = False     
+                         End If     
+          
+                         iNr = iNr + 10     
+                     End If     
+                 End If     
+             End If     
+         Next     
+     End With     
+          
+ SetLineNr_Exit:     
+     On Error GoTo 0     
+     Set vbCodeModule = Nothing     
+     Exit Sub     
+      
+ SetLineNr_Error:     
+     MsgBox "Error " & Err.Number & _     
+         " (" & Err.Description & ") in procedure SetLineNr of Module Module1"     
+     Resume SetLineNr_Exit     
+          
+ End Sub 
