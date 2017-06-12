@@ -9,3 +9,21 @@ Else
 End If
 
 End Function
+
+Function IsFormatIBAN(ByVal S As String) As Boolean
+  Dim x As Long, DigitValue As Long, Total As Long
+  If Not S Like "*[0-9A-Z ]*" Then Exit Function
+  S = Replace(S, " ", "")
+  S = Mid(S, 5) & Left(S, 4)
+  For x = 65 To 90 'A to Z
+    S = Replace(S, Chr(x), x - 55)
+  Next
+  S = StrReverse(S)
+  DigitValue = 1
+  Total = Left(S, 1)
+  For x = 2 To Len(S)
+    DigitValue = 10 * DigitValue Mod 97
+    Total = Total + Mid(S, x, 1) * DigitValue
+  Next
+  IsFormatIBAN = (Total Mod 97) = 1
+End Function
