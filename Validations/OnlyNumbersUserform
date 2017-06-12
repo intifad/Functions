@@ -1,0 +1,30 @@
+Private Sub OnlyNumbers()
+    Dim sHelp As String
+
+    If TypeName(Me.ActiveControl) = "TextBox" Then
+        With Me.ActiveControl
+            sHelp = .Value
+            For i = 0 To 9
+                sHelp = Replace(sHelp, i, "")
+            Next i
+                sHelp = Replace(sHelp, " ", "")
+                
+                sHelp2 = Replace(sHelp, Application.International(xlDecimalSeparator), "")
+                
+                If Len(sHelp2) > 0 Then
+                    MsgBox "Sorry, only numbers allowed"
+                    Application.EnableEvents = False
+                    .Value = vbNullString
+                    Application.EnableEvents = True
+                End If
+                
+                'We check if number of decimal separators does not exceeds 1
+                If Len(sHelp) - Len(sHelp2) > 1 Then
+                    MsgBox "Only one decimal separator is allowed to use!"
+                    Application.EnableEvents = False
+                    .Value = vbNullString
+                    Application.EnableEvents = True
+                End If
+        End With
+    End If
+End Sub
