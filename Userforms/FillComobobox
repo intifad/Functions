@@ -1,0 +1,28 @@
+Private Sub AddDropDownItems(oCmb As MSForms.ComboBox, Optional sh As Worksheet, Optional sHeader As String, Optional lStart As Long, Optional lEnd As Long)
+'Procedure fills combobox with defined numbers scope or with list of values containted in worksheet 'sh' which will be found in 1st row with 'sHeader'.
+'Macro will fill combobox with values from the list until it will find blank posotion in worksheet 'sh'
+
+Dim i As Long
+Dim col As Long
+
+If lStart <> 0 And lEnd <> 0 Then
+    For i = lStart To lEnd
+        oCmb.AddItem i
+    Next i
+    Exit Sub
+End If
+
+If sHeader <> "" Then
+    With sh
+        i = 2
+        col = Application.Match(sHeader, .Rows(1), 0)
+        
+        Do While .Cells(i, col) <> ""
+            oCmb.AddItem .Cells(i, col).Value
+            i = i + 1
+        Loop
+        
+    End With
+End If
+
+End Sub
