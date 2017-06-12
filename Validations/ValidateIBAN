@@ -1,0 +1,11 @@
+Function ValidateBankAccount(sCountryCode As String, sAccountNumber As String, sMessage As String) As Boolean
+
+If IsFormatIBAN(sCountryCode & sAccountNumber) = False Then
+    Me.txtbAccountNumber.SetFocus
+    MsgBox sMessage
+    ValidateBankAccount = False
+Else
+    ValidateBankAccount = True
+End If
+
+End Function
