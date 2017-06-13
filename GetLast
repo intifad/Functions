@@ -13,3 +13,32 @@ With sh
 End With
 
 End Function
+
+Function GetLastRow(sh As Worksheet, Col As Long) As Long
+'Function returns last row containing data (does not depend on filters or hidden rows - if rows are hidden treats them as containing data)
+Dim Lrow As Long
+Dim i As Long
+
+With sh
+    Lrow = .Cells(.Rows.Count, Col).End(xlUp).Row
+    Do Until False = .Rows(Lrow + 1).EntireRow.Hidden
+        Lrow = Lrow + 1
+    Loop
+    GetLastRow = Lrow
+End With
+
+End Function
+Function GetLastCol(sh As Worksheet, Row As Long) As Long
+'Function returns last column containing data (does not depend on filters or hidden columns - if columns are hidden treats them as containing data)
+Dim Lcol As Long
+Dim i As Long
+
+With sh
+    Lcol = .Cells(.Rows.Count, Row).End(xlToLeft).Column
+    Do Until False = .Columns(Lcol + 1).Hidden
+        Lcol = Lcol + 1
+    Loop
+    GetLastCol = Lcol
+End With
+
+End Function
