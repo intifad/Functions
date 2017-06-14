@@ -1,0 +1,10 @@
+Public Function ValidEmail(pAddress As String) As Boolean
+     '-----------------------------------------------------------------
+    Dim oRegEx As Object
+    Set oRegEx = CreateObject("VBScript.RegExp")
+    With oRegEx
+        .Pattern = "^[\w-\.]{1,}\@([\da-zA-Z-]{1,}\.){1,}[\da-zA-Z-]{2,3}$"
+        ValidEmail = .Test(pAddress)
+    End With
+    Set oRegEx = Nothing
+End Function
