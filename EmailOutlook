@@ -1,5 +1,5 @@
   Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
-    ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant)
+    ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant, Optional sOnBehalfOf as String)
     
   Dim FSO As Object
   Dim HTMLcode As String
@@ -88,7 +88,9 @@
                 .Subject = Subject
                 .BodyFormat = olFormatHTML
                 .HTMLBODY = sBodyText & HTMLcode & .HTMLBODY
-                
+                 If sOnBehalfOf <> "" Then
+                    .SentOnBehalfOfName = sOnBehalfOf
+                End If
                 
             
                 If sAttachments <> "" Then
