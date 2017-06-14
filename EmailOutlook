@@ -1,7 +1,4 @@
-Option Explicit
-
-Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
-    ByVal Subject As String, sBodyText As String, Optional sAttachments As String, Optional rngToSend As Variant)
+    ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant)
     
   Dim FSO As Object
   Dim HTMLcode As String
@@ -25,11 +22,47 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
      On Error GoTo CleanUp
      
      If IsMissing(rngToSend) Then
-        Set rng = Selection
+        'Set rng = Selection
+        'do nothing
      Else
         Select Case TypeName(rngToSend)
           Case Is = "Range"
               Set rng = rngToSend
+                 ' Copy the worksheet to create a new workbook
+                  Set wks = Workbooks.Add.Sheets(1)
+                  rng.SpecialCells(xlCellTypeVisible).Copy wks.Cells(1, 1)
+                  Set rng = wks.Cells(1, 1).CurrentRegion
+                  wks.Columns.AutoFit
+                ' The new workbook will be saved to the user's Temp directoy
+                  TempFile = Environ("Temp") & "\" & wks.Name & ".htm"
+                
+                ' If a file by this exists then delete it
+                  If Dir(TempFile) <> "" Then Kill TempFile
+                  
+                ' Convert the Message worksheet into HTML
+                 With ActiveWorkbook.PublishObjects.Add( _
+                   SourceType:=xlSourceRange, _
+                   Filename:=TempFile, _
+                   Sheet:=wks.Name, _
+                   Source:=rng.Address, _
+                   HtmlType:=xlHtmlStatic)
+                  .Publish (True)
+                 End With
+             
+               ' Read the HTML file back as a string
+                 Set FSO = CreateObject("Scripting.FileSystemObject")
+                 Set HTMLfile = FSO.OpenTextFile(TempFile, ForReading, True, UseDefault)
+        
+               ' Read in the entire file as a string
+                 HTMLcode = HTMLfile.ReadAll
+            
+                 HTMLfile.Close
+                
+                
+               ' Re-align the HTML code to the left side of the page
+                 HTMLcode = Replace(HTMLcode, "align=center x:publishsource=", _
+                                    "align=left x:publishsource=")
+              
           Case Is = "String"
               Set rng = Evaluate(rngToSend)
           Case Else
@@ -38,54 +71,21 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
         End Select
      End If
     
-     ' Copy the worksheet to create a new workbook
-       Set wks = Workbooks.Add.Sheets(1)
-       rng.SpecialCells(xlCellTypeVisible).Copy wks.Cells(1, 1)
-       Set rng = wks.Cells(1, 1).CurrentRegion
-       wks.Columns.AutoFit
-     ' The new workbook will be saved to the user's Temp directoy
-       TempFile = Environ("Temp") & "\" & wks.Name & ".htm"
-     
-     ' If a file by this exists then delete it
-       If Dir(TempFile) <> "" Then Kill TempFile
+  
      
          ' Get Outlook
            Set olApp = CreateObject("Outlook.Application")
       
-         ' Convert the Message worksheet into HTML
-           With ActiveWorkbook.PublishObjects.Add( _
-             SourceType:=xlSourceRange, _
-             Filename:=TempFile, _
-             Sheet:=wks.Name, _
-             Source:=rng.Address, _
-             HtmlType:=xlHtmlStatic)
-            .Publish (True)
-           End With
-       
-         ' Read the HTML file back as a string
-           Set FSO = CreateObject("Scripting.FileSystemObject")
-           Set HTMLfile = FSO.OpenTextFile(TempFile, ForReading, True, UseDefault)
-           
-            ' Read in the entire file as a string
-              HTMLcode = HTMLfile.ReadAll
-             
-           HTMLfile.Close
-          
-          
-         ' Re-align the HTML code to the left side of the page
-           HTMLcode = Replace(HTMLcode, "align=center x:publishsource=", _
-                              "align=left x:publishsource=")
+        
 
          ' Compose and send the email
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
-                .Display
-                 Signature = .HTMLBody
                 .To = Recipient
                 .CC = RecipientCC
                 .Subject = Subject
                 .BodyFormat = olFormatHTML
-                .HTMLBody = sBodyText & HTMLcode & Signature
+                .HTMLBODY = sBodyText & HTMLcode & .HTMLBODY
                 'Adding attachments - deliverd as a list with *** as list separators
                 If sAttachments <> "" Then
                      vAttachments = Split(vAttachments, "***")
@@ -95,6 +95,14 @@ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
                          End If
                      Next i
                  End If
+                 
+                If bSend Then
+                    .send
+                Else
+                    .display
+                End If
+                
+                 
             End With
 
             
