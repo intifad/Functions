@@ -1,3 +1,4 @@
+  Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
     ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant)
     
   Dim FSO As Object
@@ -86,14 +87,23 @@
                 .Subject = Subject
                 .BodyFormat = olFormatHTML
                 .HTMLBODY = sBodyText & HTMLcode & .HTMLBODY
-                'Adding attachments - deliverd as a list with *** as list separators
+                
+                
+            
                 If sAttachments <> "" Then
-                     vAttachments = Split(vAttachments, "***")
-                     For i = LBound(vAttachments) To UBound(vAttachments)
-                         If vAttachments(i) <> "" Then
-                             .Attachments.Add Trim(vAttachments(i))
-                         End If
-                     Next i
+                     'Adding attachments - deliverd as a list with *** as list separators
+                     If InStr(1, sAttachments, "***") > 0 Then
+                        vAttachments = Split(vAttachments, "***")
+                        For i = LBound(vAttachments) To UBound(vAttachments)
+                            If vAttachments(i) <> "" Then
+                                .Attachments.Add Trim(vAttachments(i))
+                            End If
+                        Next i
+                     'adding attachement in case of single attachement (no *** sperators in string)
+                     Else
+                        .Attachments.Add Trim(sAttachments)
+                     End If
+                     
                  End If
                  
                 If bSend Then
@@ -112,6 +122,7 @@ CleanUp:
         MsgBox "Run-time error '" & Err.Number & "':" & vbCrLf & vbCrLf & Err.Description
      End If
    
+   If IsMissing(rngToSend) = False Then
    ' Close the new workbook and don't save it
      ActiveWorkbook.Close SaveChanges:=False
   
@@ -122,11 +133,10 @@ CleanUp:
      With ActiveWorkbook.PublishObjects
        If .Count <> 0 Then .Item(.Count).Delete
      End With
-   
+   End If
    ' Free memory resources
      Set olApp = Nothing
      Set olEmail = Nothing
      Set FSO = Nothing
 
 End Sub
-
