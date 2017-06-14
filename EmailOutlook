@@ -82,6 +82,9 @@
          ' Compose and send the email
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
+                 If sOnBehalfOf <> "" Then
+                    .SentOnBehalfOfName = sOnBehalfOf
+                End If
                 .display
                 Signature = .htmlbody
                 .To = Recipient
@@ -89,10 +92,7 @@
                 .Subject = Subject
                 .BodyFormat = olFormatHTML
                 .htmlbody = sBodyText & HTMLcode & Signature
-                If sOnBehalfOf <> "" Then
-                    .SentOnBehalfOfName = sOnBehalfOf
-                End If
-                
+               
             
                 If sAttachments <> "" Then
                      'Adding attachments - deliverd as a list with *** as list separators
