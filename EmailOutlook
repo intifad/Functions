@@ -1,5 +1,5 @@
-  Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
-    ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant, Optional sOnBehalfOf as String)
+ Sub EmailRangeInHTML2(ByVal Recipient As String, ByVal RecipientCC As String, _
+    ByVal Subject As String, sBodyText As String, bSend As Boolean, Optional sAttachments As String, Optional rngToSend As Variant, Optional sOnBehalfOf As String)
     
   Dim FSO As Object
   Dim HTMLcode As String
@@ -82,13 +82,14 @@
          ' Compose and send the email
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
-                .Display
+                .display
+                Signature = .htmlbody
                 .To = Recipient
                 .CC = RecipientCC
                 .Subject = Subject
                 .BodyFormat = olFormatHTML
-                .HTMLBODY = sBodyText & HTMLcode & .HTMLBODY
-                 If sOnBehalfOf <> "" Then
+                .htmlbody = sBodyText & HTMLcode & Signature
+                If sOnBehalfOf <> "" Then
                     .SentOnBehalfOfName = sOnBehalfOf
                 End If
                 
@@ -96,7 +97,7 @@
                 If sAttachments <> "" Then
                      'Adding attachments - deliverd as a list with *** as list separators
                      If InStr(1, sAttachments, "***") > 0 Then
-                        vAttachments = Split(vAttachments, "***")
+                        vAttachments = Split(sAttachments, "***")
                         For i = LBound(vAttachments) To UBound(vAttachments)
                             If vAttachments(i) <> "" Then
                                 .Attachments.Add Trim(vAttachments(i))
