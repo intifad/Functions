@@ -82,6 +82,7 @@
          ' Compose and send the email
            Set olEmail = olApp.CreateItem(olMailItem)
            With olEmail
+                .Display
                 .To = Recipient
                 .CC = RecipientCC
                 .Subject = Subject
