@@ -1,0 +1,18 @@
+Sub FindLastRowAndScrollThere(objSession As Variant, sTableID As String)
+
+Dim TotalRows As Long ' number of rows in the table - table will have number of rows = no of rows with data  + (number of visiblerows-1)
+Dim VisibleRows As Long
+Dim LastRow As Long
+Dim LastRowIndex As Long
+
+
+TotalRows = objSession.findById(sTableID).RowCount
+VisibleRows = objSession.findById(sTableID).VisibleRowCount
+
+LastRow = TotalRows - VisibleRows + 1 ' +1 since at least one row woth data will be visible on the screen
+LastRowIndex = LastRow - 1 'since indexes starts from 0, numerating rows starts from 1
+
+objSession.findById(sTableID).verticalScrollbar.Position = LastRowIndex
+
+
+End Sub
