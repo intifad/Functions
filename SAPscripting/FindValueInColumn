@@ -1,0 +1,34 @@
+Function FindValueInColumn(objSession As Variant, sTableID As String, sColumnID As String, sValue As String) As Boolean
+'sColumnID should be alwajs with index 0
+'It should scroll up to the place when looked value will be in the first position in the table (with index 0)
+
+TotalRows = objSession.findById(sTableID).RowCount
+VisibleRows = objSession.findById(sTableID).VisibleRowCount
+MaxScrollPosition = TotalRows - VisibleRows
+currentScroll = 0
+
+objSession.findById(sTableID).verticalScrollbar.Position = 0
+
+If TotalRows = VisibleRows And objSession.findById(sTableID & sColumnID).Text <> sValue Then
+    FindValueInColumn = False
+    Exit Function
+ElseIf TotalRows = VisibleRows Then
+    FindValueInColumn = True
+    Exit Function
+End If
+
+
+Do While objSession.findById(sTableID & sColumnID).Text <> sValue
+    
+    currentScroll = currentScroll + 1
+     If currentScroll > MaxScrollPosition Then
+        FindValueInColumn = False
+        Exit Function
+    End If
+    objSession.findById(sTableID).verticalScrollbar.Position = currentScroll
+Loop
+
+FindValueInColumn = True
+
+
+End Function
