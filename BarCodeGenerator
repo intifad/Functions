@@ -1,0 +1,234 @@
+Sub Code128Generate(ByVal X As Single, ByVal Y As Single, ByVal Height As Single, ByVal LineWeight As Single, _
+                  ByRef TargetSheet As Worksheet, ByVal Content As String)
+' Supports B and C charsets only; values 00-94, 99,101, 103-105 for B, 00-101, 103-105 for C
+' X, Y - top-left corner coordinates
+' X in mm (0.376042)
+' Y in mm (0.341)
+' Height in mm
+' LineWeight in pt
+
+Const Tbar_Symbol As String * 2 = "11" ' termination bar
+Dim WeightSum As Single
+Dim CurBar As Integer
+Dim i, j, k, FirstSymbol As Integer
+Dim tstr2 As String * 2
+Dim tstr1 As String * 1
+Dim ContentString As String ' bars sequence
+
+Dim SymbolValue(0 To 106) As Integer ' values
+Dim SymbolString(0 To 106) As String * 11 'bits sequence
+Dim SymbolCharB(0 To 106) As String * 1  'Chars in B set
+Dim SymbolCharC(0 To 106) As String * 2  'Chars in B set
+
+For i = 0 To 106 ' values
+    SymbolValue(i) = i
+Next i
+
+' Symbols in charset B
+For i = 0 To 94
+    SymbolCharB(i) = Chr(i + 32)
+Next i
+
+' Symbols in charset C
+SymbolCharC(0) = "00"
+SymbolCharC(1) = "01"
+SymbolCharC(2) = "02"
+SymbolCharC(3) = "03"
+SymbolCharC(4) = "04"
+SymbolCharC(5) = "05"
+SymbolCharC(6) = "06"
+SymbolCharC(7) = "07"
+SymbolCharC(8) = "08"
+SymbolCharC(9) = "09"
+For i = 10 To 99
+    SymbolCharC(i) = CStr(i)
+Next i
+
+' bit sequences
+SymbolString(0) = "11011001100"
+SymbolString(1) = "11001101100"
+SymbolString(2) = "11001100110"
+SymbolString(3) = "10010011000"
+SymbolString(4) = "10010001100"
+SymbolString(5) = "10001001100"
+SymbolString(6) = "10011001000"
+SymbolString(7) = "10011000100"
+SymbolString(8) = "10001100100"
+SymbolString(9) = "11001001000"
+SymbolString(10) = "11001000100"
+SymbolString(11) = "11000100100"
+SymbolString(12) = "10110011100"
+SymbolString(13) = "10011011100"
+SymbolString(14) = "10011001110"
+SymbolString(15) = "10111001100"
+SymbolString(16) = "10011101100"
+SymbolString(17) = "10011100110"
+SymbolString(18) = "11001110010"
+SymbolString(19) = "11001011100"
+SymbolString(20) = "11001001110"
+SymbolString(21) = "11011100100"
+SymbolString(22) = "11001110100"
+SymbolString(23) = "11101101110"
+SymbolString(24) = "11101001100"
+SymbolString(25) = "11100101100"
+SymbolString(26) = "11100100110"
+SymbolString(27) = "11101100100"
+SymbolString(28) = "11100110100"
+SymbolString(29) = "11100110010"
+SymbolString(30) = "11011011000"
+SymbolString(31) = "11011000110"
+SymbolString(32) = "11000110110"
+SymbolString(33) = "10100011000"
+SymbolString(34) = "10001011000"
+SymbolString(35) = "10001000110"
+SymbolString(36) = "10110001000"
+SymbolString(37) = "10001101000"
+SymbolString(38) = "10001100010"
+SymbolString(39) = "11010001000"
+SymbolString(40) = "11000101000"
+SymbolString(41) = "11000100010"
+SymbolString(42) = "10110111000"
+SymbolString(43) = "10110001110"
+SymbolString(44) = "10001101110"
+SymbolString(45) = "10111011000"
+SymbolString(46) = "10111000110"
+SymbolString(47) = "10001110110"
+SymbolString(48) = "11101110110"
+SymbolString(49) = "11010001110"
+SymbolString(50) = "11000101110"
+SymbolString(51) = "11011101000"
+SymbolString(52) = "11011100010"
+SymbolString(53) = "11011101110"
+SymbolString(54) = "11101011000"
+SymbolString(55) = "11101000110"
+SymbolString(56) = "11100010110"
+SymbolString(57) = "11101101000"
+SymbolString(58) = "11101100010"
+SymbolString(59) = "11100011010"
+SymbolString(60) = "11101111010"
+SymbolString(61) = "11001000010"
+SymbolString(62) = "11110001010"
+SymbolString(63) = "10100110000"
+SymbolString(64) = "10100001100"
+SymbolString(65) = "10010110000"
+SymbolString(66) = "10010000110"
+SymbolString(67) = "10000101100"
+SymbolString(68) = "10000100110"
+SymbolString(69) = "10110010000"
+SymbolString(70) = "10110000100"
+SymbolString(71) = "10011010000"
+SymbolString(72) = "10011000010"
+SymbolString(73) = "10000110100"
+SymbolString(74) = "10000110010"
+SymbolString(75) = "11000010010"
+SymbolString(76) = "11001010000"
+SymbolString(77) = "11110111010"
+SymbolString(78) = "11000010100"
+SymbolString(79) = "10001111010"
+SymbolString(80) = "10100111100"
+SymbolString(81) = "10010111100"
+SymbolString(82) = "10010011110"
+SymbolString(83) = "10111100100"
+SymbolString(84) = "10011110100"
+SymbolString(85) = "10011110010"
+SymbolString(86) = "11110100100"
+SymbolString(87) = "11110010100"
+SymbolString(88) = "11110010010"
+SymbolString(89) = "11011011110"
+SymbolString(90) = "11011110110"
+SymbolString(91) = "11110110110"
+SymbolString(92) = "10101111000"
+SymbolString(93) = "10100011110"
+SymbolString(94) = "10001011110"
+SymbolString(95) = "10111101000"
+SymbolString(96) = "10111100010"
+SymbolString(97) = "11110101000"
+SymbolString(98) = "11110100010"
+SymbolString(99) = "10111011110"
+SymbolString(100) = "10111101110"
+SymbolString(101) = "11101011110"
+SymbolString(102) = "11110101110"
+SymbolString(103) = "11010000100"
+SymbolString(104) = "11010010000"
+SymbolString(105) = "11010011100"
+SymbolString(106) = "11000111010"
+
+X = X / 0.376042 'mm to pt
+Y = Y / 0.341 'mm to pt
+Height = Height / 0.341 'mm to pt
+
+If IsNumeric(Content) = True Then  ' value is numeric
+   i = 1 'symbol and weight index
+   If Len(Content) Mod 2 = 1 Then 'odd
+       WeightSum = SymbolValue(104) ' start-b
+       ContentString = ContentString + SymbolString(104)
+      tstr1 = Mid(Content, 1, 1)
+      k = 0
+      Do While tstr1 <> SymbolCharB(k)
+         k = k + 1
+      Loop
+      WeightSum = WeightSum + i * SymbolValue(k)
+      ContentString = ContentString + SymbolString(k)
+      i = i + 1
+      WeightSum = WeightSum + i * SymbolValue(99) 'Code-C
+      ContentString = ContentString + SymbolString(99) 'Code-C
+      Content = Right(Content, Len(Content) - 1) 'cut 1st symbol
+   Else 'even
+      WeightSum = SymbolValue(105) ' start-c
+      ContentString = ContentString + SymbolString(105)
+      i = 0
+   End If
+   
+   For j = 1 To Len(Content) Step 2
+      tstr2 = Mid(Content, j, 2)
+      i = i + 1
+      k = 0
+      Do While tstr2 <> SymbolCharC(k)
+         k = k + 1
+      Loop
+      WeightSum = WeightSum + i * SymbolValue(k)
+      ContentString = ContentString + SymbolString(k)
+   Next j
+   ContentString = ContentString + SymbolString(SymbolValue(WeightSum Mod 103))
+   ContentString = ContentString + SymbolString(106)
+
+   
+   Else ' alpha-numeric
+   WeightSum = SymbolValue(104) ' start-b
+   ContentString = ContentString + SymbolString(104)
+   i = 0 ' symbol count
+   For j = 1 To Len(Content) Step 1
+      tstr1 = Mid(Content, j, 1)
+      i = i + 1
+      k = 0
+      Do While tstr1 <> SymbolCharB(k)
+         k = k + 1
+      Loop
+      WeightSum = WeightSum + i * SymbolValue(k)
+      ContentString = ContentString + SymbolString(k)
+   Next j
+   ContentString = ContentString + SymbolString(SymbolValue(WeightSum Mod 103))
+   ContentString = ContentString + SymbolString(106)
+
+End If
+
+ContentString = ContentString + Tbar_Symbol
+
+'Barcode drawing
+CurBar = 0
+
+For i = 1 To Len(ContentString)
+    Select Case Mid(ContentString, i, 1)
+    Case 0
+        CurBar = CurBar + 1
+    Case 1
+        CurBar = CurBar + 1
+' (CurBar * LineWeight) * 0.9 -  here is 10% overlapping :-)
+        With TargetSheet.Shapes.AddLine(X + (CurBar * LineWeight) * 0.9, Y, X + (CurBar * LineWeight) * 0.9, (Y + Height)).Line
+        .Weight = LineWeight
+        .ForeColor.RGB = vbBlack ' my Excel writes light-blue lines by default, so the color is forcibly switched
+        End With
+    End Select
+Next i
+
+End Sub
