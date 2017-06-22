@@ -1,0 +1,23 @@
+Function Kurs_walut(ByRef Waluta As String, ByRef Data_kursu As Date, Tabela As String) 
+     Const Dni As Byte = 7  ' ile dni wstecz szukać kursu od podanej daty 
+     Dim xmlOBject As Object, kurs, i As Byte 
+
+     If Data_kursu > Date Then Exit Function 
+
+     Set xmlOBject = CreateObject("MSXML2.DOMDocument") 
+     xmlOBject.async = False 
+
+     For i = 0 To Dni 
+         xmlOBject.Load ("http://api.nbp.pl/api/exchangerates/rates/" & Tabela & "/" & Waluta & "/" & Data_kursu) 
+
+         If Len(xmlOBject.parseError.srctext) > 0 Then 
+             kurs = Split(xmlOBject.parseError.srctext, """mid"":")(1) 
+             Kurs_walut = Val(Replace(kurs, "}]}", "")) 
+             Exit For 
+         Else 
+             Data_kursu = Data_kursu - 1 
+         End If 
+
+     Next i 
+
+ End Function 
