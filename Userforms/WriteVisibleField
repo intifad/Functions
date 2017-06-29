@@ -1,0 +1,10 @@
+Private Sub WriteVisibleField(rngField As Range, ctrl As Control)
+
+If ctrl.Visible = True Then
+    rngField.Value = ctrl.Value
+Else
+    rngField.Value = "Not Required"
+End If
+
+
+End Sub
