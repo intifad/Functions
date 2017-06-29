@@ -1,0 +1,42 @@
+Function CheckOptionButtonGroup(sGroupName As String) As Boolean
+'Function looks if at least one radio button withing the group is turned on
+'Function returns TRUE if at least one radio buttons is turned on
+'Function returns FALSE if none of radio buttons is turned on
+
+Dim ctrl As Control
+Dim bAtLeastOneTrueInGroup As Boolean
+
+For Each ctrl In Me.Controls
+    If TypeName(ctrl) = "OptionButton" Then
+        If ctrl.GroupName = sGroupName And ctrl.Value = True Then
+            bAtLeastOneTrueInGroup = True
+        End If
+    End If
+Next ctrl
+
+If bAtLeastOneTrueInGroup = False Then
+    MsgBox "Please select at least one option from " & sGroupName & " radio buttons list!"
+    Application.EnableEvents = True
+    CheckOptionButtonGroup = False
+Else
+    CheckOptionButtonGroup = True
+End If
+
+End Function
+
+Private Function GetOptionButtonGroupsNames() As Collection
+'Function collects all GroupNames of radio buttons within UserFrom and put into collection
+Dim CollectionHelp As New Collection
+Dim ctrl As Control
+
+For Each ctrl In Me.Controls
+    If TypeName(ctrl) = "OptionButton" Then
+        On Error Resume Next
+            CollectionHelp.Add ctrl.GroupName, ctrl.GroupName
+        On Error GoTo 0
+    End If
+Next ctrl
+
+Set GetOptionButtonGroupsNames = CollectionHelp
+
+End Function
