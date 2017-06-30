@@ -1,0 +1,71 @@
+Function WorksheetExists(wb As Workbook, sSheetName As String) As Boolean
+
+Dim sh As Worksheet
+    On Error Resume Next
+    Set sh = wb.Sheets(sSheetName)
+    On Error GoTo 0
+    WorksheetExists = (sh Is Nothing = False)
+End Function
+
+Sub MergeFiles(arrFileNames As Variant, shDestination As Worksheet, Optional sSheetName As String, Optional iSheetIndex As Integer)
+'We assume that data in merged files start in 1st row and last row defines 1st column data range
+
+Dim i As Long
+Dim lRow As Long
+Dim wksSource As Worksheet
+Dim wkbSource As Workbook
+Dim PasteRow As Long
+Dim Lcol As Long
+Dim Hrow As Long
+
+
+If sSheetName = "" And iSheetIndex = 0 Then
+    MsgBox "You did not provided all arguments!"
+    Stop
+End If
+
+For i = LBound(arrFileNames) To UBound(arrFileNames)
+    
+    Set wkbSource = Workbooks.Open(arrFileNames(i))
+    
+    If sSheetName <> "" Then
+        If WorksheetExists(wksSource, sSheetName) = False Then
+            MsgBox "It was not possible to find sheet " & sSheetName & " in file " & wkbSource.Name
+            Call ToggleScreenUpdating(TurnOn)
+            End
+        Else
+             Set wksSource = wkbSource.Sheets(sSheetName)
+        End If
+    End If
+    
+    If iSheetIndex <> 0 Then
+        Set wksSource = wkbSource.Sheets(iSheetIndex)
+    End If
+    
+    With wksSource
+    
+        On Error Resume Next
+            .ShowAllData
+        On Error GoTo 0
+        
+        lRow = .Cells(.Rows.Count, 1).End(xlUp).Row
+        Lcol = .Cells(1, .Columns.Count).End(xlToLeft).Column
+        
+        If i = LBound(arrFileNames) Then
+            Hrow = 1 ' We copy headers from 1st file
+            PasteRow = 1 ' We paste to the 1st row in destination worksheet
+        Else
+            Hrow = 2
+            PasteRow = shDestination.Cells(Rows.Count, 1).End(xlUp).Row + 1
+        End If
+        
+        .Range(.Cells(Hrow, 1), .Cells(lRow, Lcol)).Copy
+        shDestination.Cells(PasteRow, 1).PasteSpecial
+        
+    End With
+    
+    Application.CutCopyMode = False
+    wkbSource.Close False
+Next i
+
+End Sub
