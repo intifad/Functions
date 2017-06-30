@@ -2,10 +2,10 @@ Function GetFileNames(sTitle As String, Optional sDefaultPath As String) As Vari
 Dim vHelp As Variant
 vHelp = Application.GetOpenFilename(, , sTitle, , True)
 ChDir (sDefaultPath)
-If vHelp = False Then    MsgBox "You did not choose any file!", vbCritical    
-    ToggleScreenUpdating (TurnOn)    
+If LCase(TypeName(vHelp)) = "boolean" Then
+    MsgBox "You did not choose any file!", vbCritical
+    ToggleScreenUpdating (TurnOn)
     End
 End If
-GetFileNames=vhelp
+GetFileNames = vHelp
 End Function
-
