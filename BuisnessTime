@@ -1,0 +1,52 @@
+Function BuisnessHours(dDate As Date, Hours As Double, tStart As Date, tEnd As Date, Optional Holidays As Variant) As Date
+'Function calculates date after adding specific amount of time expressed in number of hours (1 - one hour, 0.5 half an hour)
+'It is possible to provide working hours as dates and list of days (holidays) that should be not included within calculation of working days.
+'Array containing holidays should contain dates as longs
+
+Dim dHours As Date
+Dim TimeToSubstract As Date
+Dim Days As Double
+Dim TimeToAdd As Double
+
+dHours = Hours / 24
+
+'We check if day of arrival of request is during working day.
+Do Until IsWorkday(dDate, Holidays)
+    dDate = WorksheetFunction.RoundDown(dDate, 0) + tStart + 1 'We start at start time next day
+Loop
+
+'We check if time of arrival of request is within working hours! If hour is within <tStart,tEnd> we do not change anything.
+If TimeSerial(Hour(dDate), Minute(dDate), 0) > tEnd Then
+    dDate = WorksheetFunction.RoundUp(dDate, 0) + tStart
+    'We check again  day of arrival of request is during working day.
+    Do Until IsWorkday(dDate, Holidays())
+        dDate = WorksheetFunction.RoundDown(dDate, 0) + tStart + 1 'we start at start time next day
+    Loop
+ElseIf TimeSerial(Hour(dDate), Minute(dDate), 0) < tStart Then
+    dDate = Fix(dDate) + tStart
+End If
+
+If dDate + dHours <= WorksheetFunction.RoundDown(dDate, 0) + tEnd Then
+     BuisnessHours = dDate + dHours
+Else
+    TimeToSubstract = tEnd - Fraction(dDate)
+    dHours = dHours - TimeToSubstract
+    Days = dHours / (tEnd - tStart) + 1
+    TimeToAdd = dHours - ((Fix(Days) - 1) * (tEnd - tStart))
+    BuisnessHours = WorksheetFunction.WorkDay(dDate, Fix(Days), Holidays) + tStart + TimeToAdd
+End If
+End Function
+
+Function IsWorkday(dDate As Date, Optional Holidays As Variant) As Boolean
+
+If WorksheetFunction.WorkDay(dDate - 1, 1, Holidays) = Fix(dDate) Then
+    IsWorkday = True
+Else
+    IsWorkday = False
+End If
+
+End Function
+
+Public Function Fraction(AValue As Variant) As Double
+   Fraction = AValue - Fix(AValue)
+End Function
