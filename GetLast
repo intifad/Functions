@@ -34,7 +34,7 @@ Dim Lcol As Long
 Dim i As Long
 
 With sh
-    Lcol = .Cells(.Rows.Count, Row).End(xlToLeft).Column
+    Lcol = .Cells( Row , .columns.count).End(xlToLeft).Column
     Do Until False = .Columns(Lcol + 1).Hidden
         Lcol = Lcol + 1
     Loop
