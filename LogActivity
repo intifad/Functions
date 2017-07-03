@@ -34,6 +34,7 @@ With rs
     .Fields("FileLocalization") = ThisWorkbook.Path
     .Fields("Comments") = sComments
     .Fields("MacroVersion") = ThisWorkbook.BuiltinDocumentProperties("Title")
+    .Fields("Version") = ThisWorkbook.BuiltinDocumentProperties("Categories")
     For i = LBound(Arguments) To UBound(Arguments) Step 2
         .Fields(Arguments(i)).Value = Arguments(i + 1)
     Next i
