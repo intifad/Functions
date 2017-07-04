@@ -1,0 +1,16 @@
+Sub TransferModule(wbTarget As Workbook, sComponentName As String)
+
+Dim sDesktopAddress As String
+Dim sTempFileName As String
+
+    sDesktopAddress = CreateObject("WScript.Shell").SpecialFolders("Desktop") & Application.PathSeparator
+    sTempFileName = sDesktopAddress & "MyTempModule.bas"
+    
+    ThisWorkbook.VBProject.VBComponents(sComponentName).Export sTempFileName
+    wbTarget.VBProject.VBComponents.Import sTempFileName
+    Kill sTempFileName
+    On Error Resume Next
+    Kill Replace(sTempFileName, "bas", "frx")
+    On Error GoTo 0
+    
+End Sub
