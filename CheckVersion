@@ -1,0 +1,41 @@
+Sub CheckVersion(sDatabasePath As String, sTableName As String)
+'Macro checks in database if currnetly run macro is the newest one.
+
+Dim cn As ADODB.Connection
+Dim rs As ADODB.Recordset
+Dim i As Long
+
+If sDatabasePath = "" Then sDatabasePath = "X:\Excel\SAPscript.accdb"
+If Dir(sDatabasePath) = "" Then sDatabasePath = "W:\_EMEA\Restricted\99 INFOSYS\Test\SAPscript.accdb"
+If sTableName = "" Then sTableName = "MacroVersioning"
+
+If Dir(sDatabasePath) = "" Then
+    MsgBox "You have no access to database path!" & vbNewLine & "Call developer!" & vbNewLine & vbNewLine & "Macro will proceed but its activity will not be registered in db", vbInformation
+    Exit Sub
+End If
+
+
+Set cn = New ADODB.Connection
+Set rs = New ADODB.Recordset
+
+cn.Open "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" & sDatabasePath & ";"
+rs.Open sTableName, cn, adOpenDynamic, adLockOptimistic, adCmdTable
+
+
+
+rs.Find "Name=" & ThisWorkbook.BuiltinDocumentProperties("Title")
+
+If rs.Fields("Version") <> ThisWorkbook.BuiltinDocumentProperties("Category") Then
+    If MsgBox("Currently used macro is not the newest one!" & vbNewLine & "Do you want to proceed further?", vbCritical + vbYesNo, "Macro not updated!") = vbNo Then
+        End
+    End If
+End If
+
+
+rs.Close
+cn.Close
+
+Set rs = Nothing
+Set cn = Nothing
+
+End Sub
