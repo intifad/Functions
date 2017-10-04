@@ -1,0 +1,22 @@
+Sub CheckVersion()
+
+    Dim dbs As DAO.Database
+    Dim cnt As DAO.Container
+    Dim doc As DAO.Document
+    Dim prp As DAO.Property
+    Dim sRightVersion As String
+    
+    'Define the object tree to the database property where the name resides
+    Set dbs = CodeDb                    ' Define Database object.
+    Set cnt = dbs.Containers!Databases     ' Define Container object.
+    
+   'Change "UserDefined" to "SummaryInfo" to get the data I was looking for:
+    Set doc = cnt.Documents!SummaryInfo   ' Define Document object
+    sRightVersion = DLookup("[Version]", "dictVersion", "[ID]=1")
+    If doc.Properties("Subject") <> sRightVersion Then
+        MsgBox "You are not using actualized version of form!" & vbNewLine & "The newest version is :" & sRightVersion
+        Application.Quit acQuitSaveNone
+    End If
+    
+    
+End Sub
