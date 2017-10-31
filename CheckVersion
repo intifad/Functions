@@ -23,7 +23,7 @@ rs.Open sTableName, cn, adOpenDynamic, adLockOptimistic, adCmdTable
 
 
 
-rs.Find "Title=" & & "'" & ThisWorkbook.BuiltinDocumentProperties("Title") & "'"
+rs.Find "Title=" &  "'" & ThisWorkbook.BuiltinDocumentProperties("Title") & "'"
 
 If rs.Fields("Version") <> ThisWorkbook.BuiltinDocumentProperties("Category") Then
     If MsgBox("Currently used macro is not the newest one!" & vbNewLine & "Do you want to proceed further?", vbCritical + vbYesNo, "Macro not updated!") = vbNo Then
