@@ -6,13 +6,20 @@ Function OpenWorkbook(Optional sFilePath As String, Optional sTitle As String, O
 '##################################################################################################################
 
 Dim sWkbName As String
-
+Static sNewPath As String
 Dim fso As Object
 Set fso = CreateObject("scripting.filesystemobject")
 
+If sDefaultPath = vbNullString And sNewPath = vbNullString Then
+    sDefaultPath = ThisWorkbook.Path
+ElseIf sNewPath <> vbNullString Then
+    sDefaultPath = sNewPath
+End If
+
+
 If sFilePath <> vbNullString Then
     If Dir(sFilePath) <> "" Then
-        sWkbName = fso.getfilename(sFilePath)
+        sWkbName = fso.GetFileName(sFilePath)
         On Error Resume Next
         Set OpenWorkbook = Workbooks(sWkbName)
         Err.Clear
@@ -21,7 +28,6 @@ If sFilePath <> vbNullString Then
     Else
     'file does not exists
         MsgBox "Could not find file in directory:" & vbNewLine & sFilePath, vbCritical
-        ToggleScreenUpdating (TurnOn)
         End
     End If
 Else
@@ -32,11 +38,10 @@ Else
         .Show
         If .SelectedItems.Count = 0 Then
             MsgBox "You did not choose any file!"
-            ToggleScreenUpdating (TurnOn)
             End
         Else
         sFilePath = .SelectedItems.Item(1)
-        sWkbName = fso.getfilename(sFilePath)
+        sWkbName = fso.GetFileName(sFilePath)
         On Error Resume Next
         Set OpenWorkbook = Workbooks(sWkbName)
         Err.Clear
@@ -47,6 +52,7 @@ Else
 End If
 
 Set OpenWorkbook = Workbooks.Open(Filename:=sFilePath)
+sNewPath = OpenWorkbook.Path
 
 
 WorkbookOpened:
