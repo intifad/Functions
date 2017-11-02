@@ -1,0 +1,16 @@
+Sub RemoveNameError(sh As Worksheet)
+
+Dim myCell As Range
+Set myCell = sh.Cells(1, 1)
+
+On Error Resume Next
+    Set myCell = sh.UsedRange.Find("#NAME?", myCell, xlValues, xlWhole, xlNext, , , , False)
+    Do While Not myCell Is Nothing
+        myCell.Value = Mid(myCell.Formula, 2)
+        Set myCell = sh.UsedRange.Find("#NAME?", myCell, xlValues, xlWhole, xlNext, , , , False)
+    Loop
+On Error GoTo 0
+
+
+
+End Sub
