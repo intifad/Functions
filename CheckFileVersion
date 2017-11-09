@@ -1,0 +1,39 @@
+Sub CheckFileVersion(control As IRibbonControl)
+Dim cn As ADODB.Connection
+Dim rs As ADODB.Recordset
+Dim i As Long
+Dim sNewestVersion As String
+Dim sCurrentVersion As String
+Dim sDatabasePath As String
+Dim sTableName As String
+
+
+sDatabasePath = "X:\Excel\SAPscript.accdb"
+If Dir(sDatabasePath) = "" Then sDatabasePath = "W:\_EMEA\Restricted\99 INFOSYS\Test\SAPscript.accdb"
+sTableName = "MacroVersioning"
+
+If Dir(sDatabasePath) = "" Then
+    MsgBox "You have no access to database path!" & vbNewLine & "Call developer!", vbInformation, "Macro Version Info"
+    Exit Sub
+End If
+
+Set cn = New ADODB.Connection
+Set rs = New ADODB.Recordset
+
+cn.Open "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" & sDatabasePath & ";"
+rs.Open sTableName, cn, adOpenDynamic, adLockOptimistic, adCmdTable
+
+
+rs.Find "Title=" & "'" & ThisWorkbook.BuiltinDocumentProperties("Title") & "'"
+
+sNewestVersion = rs.Fields("Version")
+sCurrentVersion = ThisWorkbook.BuiltinDocumentProperties("Category")
+
+MsgBox "Version of this file is: " & sCurrentVersion & vbNewLine & "The newest version is: " & sNewestVersion, , "Macro Version Info"
+
+rs.Close
+cn.Close
+
+Set rs = Nothing
+Set cn = Nothing
+End Sub
