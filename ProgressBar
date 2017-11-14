@@ -1,0 +1,46 @@
+Dim x As Double, y As Double
+
+Public Sub ProgressBarStart(activity As String)
+
+'this procedure should always be set before the loop
+'procedure resets the progress bar and prepares it for new use
+'sets activity description basing on the given parameter
+
+    x = 0: y = 0
+    frmProgressBar.Show 0
+    frmProgressBar.lProgress_Bar.Width = 0
+    frmProgressBar.lActivity.Caption = activity
+    frmProgressBar.Repaint
+    
+End Sub
+
+Public Sub ProgressBar(ByVal current_position As Long, limit As Long)
+
+'this procedure should be placed in the loop where the progress bar should be presented
+'procedure sets the status bar on the current position basing on the given parameters
+
+    On Error Resume Next
+
+    x = Round((current_position / limit) * 100, 0)
+    frmProgressBar.lProgress_Bar.Width = Round((current_position / limit) * 250, 0)
+    frmProgressBar.lProgress_LBL.Caption = x & " %"
+        
+    If Not x = y Then frmProgressBar.Repaint
+    
+    y = x
+    
+    On Error GoTo 0
+    
+    frmProgressBar.Repaint
+    
+End Sub
+
+Public Sub ProgressBarClose(test As Boolean)
+
+'this procedure closes the progress bar window
+'clears the activity description
+
+    frmProgressBar.lActivity.Caption = ""
+    Unload frmProgressBar
+    
+End Sub
