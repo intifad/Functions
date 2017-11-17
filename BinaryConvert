@@ -1,0 +1,7 @@
+Public Function Binary(Number As Long) As String
+ If Abs(Number) > 1 Then
+         Binary = Binary(Number \ 2) & CStr(Abs(Number Mod 2))
+     Else
+         Binary = CStr(Number)
+ End If
+ End Function
