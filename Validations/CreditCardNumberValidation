@@ -1,0 +1,33 @@
+Function CheckCard(CCNumber As String) As Boolean
+     Dim Counter As Integer, TmpInt As Integer
+     Dim Answer As Integer
+
+     Counter = 1
+     TmpInt = 0
+
+     While Counter <= Len(CCNumber)
+         If IsEven(Len(CCNumber)) Then
+             TmpInt = Val(Mid$(CCNumber, Counter, 1))
+             If Not IsEven(Counter) Then
+                 TmpInt = TmpInt * 2
+                 If TmpInt > 9 Then TmpInt = TmpInt - 9
+             End If
+             Answer = Answer + TmpInt
+             'Debug.Print Counter, TmpInt, Answer
+             Counter = Counter + 1
+         Else
+             TmpInt = Val(Mid$(CCNumber, Counter, 1))
+             If IsEven(Counter) Then
+                 TmpInt = TmpInt * 2
+                 If TmpInt > 9 Then TmpInt = TmpInt - 9
+             End If
+             Answer = Answer + TmpInt
+             'Debug.Print Counter, TmpInt, Answer
+             Counter = Counter + 1
+         End If
+     Wend
+
+     Answer = Answer Mod 10
+
+     If Answer = 0 Then CheckCard = True
+ End Function
