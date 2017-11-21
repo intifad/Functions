@@ -1,0 +1,51 @@
+Function GeneratePESEL(Optional Sex As String, Optional BirthDate As Date) As String
+'Sex - 'm' for men other text for women. If string empty (no argument then ses is random)
+'If Birthday missing we applu random birthday
+
+Dim sDay As String
+Dim sMonth As String
+Dim sYear As String
+Dim dDate As Date
+Dim sPesel As String
+Dim arrOdd
+Dim arrEven
+Dim arrWeights
+Dim Control As Long
+Dim sSexDigit As String
+Dim i As Long
+Dim sControlDigit As String
+
+arrOdd = Split("1,3,5,7,9", ",")
+arrEven = Split("0,2,4,6,8", ",")
+
+arrWeights = Split("9,7,3,1,9,7,3,1,9,7", ",")
+
+If CLng(BirthDate) = 0 Then
+    dDate = CDate(WorksheetFunction.RandBetween(20569, 30000))
+Else
+    dDate = BirthDate
+End If
+
+sDay = Right(0 & Day(dDate), 2)
+sMonth = Right(0 & Month(dDate), 2)
+sYear = Right(Year(dDate), 2)
+
+If UCase(Sex) = "M" Then
+    sSexDigit = arrOdd(WorksheetFunction.RandBetween(0, 4))
+ElseIf Sex <> "" Then
+    sSexDigit = arrEven(WorksheetFunction.RandBetween(0, 4))
+Else
+    sSexDigit = WorksheetFunction.RandBetween(0, 9)
+End If
+
+sPesel = sYear & sMonth & sDay & Right("000" & WorksheetFunction.RandBetween(0, 999), 3) & sSexDigit
+
+For i = 1 To Len(sPesel)
+    Control = Mid(sPesel, i, 1) * arrWeights(i - 1) + Control
+Next i
+
+sControlDigit = Control Mod 10
+
+GeneratePESEL = sPesel & sControlDigit
+
+End Function
