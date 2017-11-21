@@ -1,0 +1,23 @@
+
+Function PeselIsValid(sPesel As String) As Boolean
+Dim arrWeights
+Dim i As Long
+Dim Control As Long
+Dim sControlDigit As String
+
+arrWeights = Split("9,7,3,1,9,7,3,1,9,7", ",")
+
+If Trim(Len(sPesel)) <> 11 Then
+    PeselIsValid = False
+    Exit Function
+End If
+
+For i = 1 To Len(sPesel)
+    Control = Mid(sPesel, i, 1) * arrWeights(i - 1) + Control
+Next i
+
+sControlDigit = Right(sPesel, 1)
+
+PeselIsValid = (CStr(Control Mod 10) = sControlDigit)
+
+End Function
