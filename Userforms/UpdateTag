@@ -5,13 +5,13 @@ Dim lTag As Long
 lTag = CLng(ctrl.Tag)
 
 If bAdd Then
-    If lTag And lNumber = lNumber Then
+    If (lTag And lNumber) = lNumber Then
         'do nothing - component already included
     Else
         lTag = lTag + lNumber
     End If
 Else
-    If lTag And lNumber = lNumber Then
+    If (lTag And lNumber) = lNumber Then
         lTag = lTag - lNumber
     Else
         'do nothing - component already excluded
