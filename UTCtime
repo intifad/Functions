@@ -1,0 +1,8 @@
+Function UTCGet() As Date 
+     Dim objDateTime As Object 
+     Set objDateTime = CreateObject("WbemScripting.SWbemDateTime") 
+     objDateTime.SetVarDate VBA.Now 
+
+     GetUTC = objDateTime.GetVarDate(False) 
+     Set objDateTime = Nothing 
+ End Function
