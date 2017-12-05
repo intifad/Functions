@@ -1,0 +1,30 @@
+Function UniqueValues(RangeOrArray As Variant, bReturnRangeArray) As Variant
+    'Function returns an array of unique values taken from array or range
+
+    'RangeOrArray - there may be put an array or range object, range may be composed of many columns
+    'bReturnRangeArray - if true we should get array that may be put directly into range like rng.value = result, otherwise we get regular array
+    
+    Dim Col As New Collection
+    Dim a As Variant
+    Dim i As Long
+    Dim arrResult As Variant
+    
+    On Error Resume Next
+    For Each a In RangeOrArray
+        Col.Add a, a
+    Next
+    On Error GoTo 0
+    If bReturnRangeArray Then
+        ReDim arrResult(1 To Col.Count, 1 To 1)
+        For i = 1 To Col.Count
+            arrResult(i, 1) = Col(i)
+        Next
+    Else
+        ReDim arrResult(1 To Col.Count)
+        For i = 1 To Col.Count
+            arrResult(i) = Col(i)
+        Next
+    End If
+    
+    UniqueValues = arrResult
+End Function
