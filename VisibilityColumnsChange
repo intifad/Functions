@@ -1,0 +1,14 @@
+Sub ChangeColumnsVisibility(sh As Worksheet, sColumns As String, bHidden As Boolean)
+Dim i As Long
+Dim arr As Variant
+
+arr = Split(sColumns, ",")
+
+With sh
+       For i = LBound(arr) To UBound(arr)
+            .Columns(arr(i)).Hidden = bHidden
+       Next i
+End With
+
+
+End Sub
