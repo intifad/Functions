@@ -1,4 +1,4 @@
-Public Function ValidEmail(pAddress As String) As Boolean
+Public Function IsEmailValid(pAddress As String) As Boolean
      '-----------------------------------------------------------------
     Dim oRegEx As Object
     Set oRegEx = CreateObject("VBScript.RegExp")
