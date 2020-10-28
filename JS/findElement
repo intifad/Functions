@@ -1,0 +1,9 @@
+function findElement(wdw, id) {
+  var el = wdw.document.getElementById(id);
+  if (el) return el;
+  for (var i = 0; i < wdw.frames.length; i++) {
+    var el = findElement(wdw.frames[i].window, id);
+    if (el) return el;
+  }
+  return null;
+}
