@@ -1,0 +1,18 @@
+/* C#
+    Decoding the field name is pretty much straight forward all that needs to be done is to 
+    replace all “_x” with “%u”, remove all remaining underscores and use HttpUtility.UrlDecode
+    '_x00d6_sterreich' => 'Österreich'
+ */
+ 
+private string DecodeInternalField(string toDecode)
+{
+    if (toDecode != null)
+    {
+        string decodedString = toDecode.Replace("_x", "%u").Replace("_", "");
+        return HttpUtility.UrlDecode(decodedString);
+    }
+    else
+    {
+        return null;
+    }
+}
