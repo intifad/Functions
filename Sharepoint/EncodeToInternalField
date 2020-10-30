@@ -1,0 +1,51 @@
+/*
+C#
+The method which was recommended by Hugh Wood (@HughAJWood) is to use XmlConvert.
+EncodeName for encoding and XmlConvert.DecodeName for decoding the field names. 
+What I have experienced with this is that it cannot considered to be a save approach to encode the display name strings. 
+To give you an example “Österreich”, the german name of the country, will be encoded to “Österreich” but a field with this label
+in SharePoint will be encoded as “_x00d6_sterreich”. This is because the letter “Ö” is valid UTF-8 character to be used in a XML 
+but somehow it’s not save enough for SharePoint.
+
+My approach is a little bit different, might not the fastest, but save in a manner of SharePoint. 
+So what I do to create a valid encoding, is to encode every single character of the display name using the method HttpUtility.UrlEncodeUnicode.
+
+"Österreich"=>"_x00d6_sterreich"
+*/
+
+private string EncodeToInternalField(string toEncode)
+{
+
+    if (toEncode != null)
+    {
+        StringBuilder encodedString = new StringBuilder();
+
+        foreach (char chr in toEncode.ToCharArray())
+        {
+            string encodedChar = HttpUtility.UrlEncodeUnicode(chr.ToString());
+
+            if (encodedChar.StartsWith("%"))
+            {
+                encodedChar = encodedChar.Replace("u", "x");
+                encodedChar = encodedChar.Substring(1, encodedChar.Length - 1);
+                encodedChar = String.Format("_{0}_", encodedChar);
+                encodedString.Append(encodedChar);
+            }
+            else if (encodedChar == "+" || encodedChar == " ")
+            {
+                encodedString.Append("_x0020_");
+            }
+            else if (encodedChar == ".")
+            {
+                encodedString.Append("_x002e_");
+            }
+            else
+            {
+                encodedString.Append(chr);
+            }
+
+        }
+        return encodedString.ToString();
+    }
+    return null;
+}
