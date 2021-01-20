@@ -1,14 +1,13 @@
-function selectOption(optionElement,titleElement)
-{
-  var e = document.createEvent('HTMLEvents');
-  e.initEvent('change', false, true);
+function selectOption(optionElement, titleElement) {
+    var e = document.createEvent('HTMLEvents');
+    e.initEvent('change', false, true);
 
-  for (i = 0; i < optionElement.options.length; i++)
-    {
-    currentTitle = optionElement.options[i].title;
-    if (currentTitle == titleElement) {
-      combobox.selectedIndex = i;
-      combobox.dispatchEvent(e);
-      break;
+    for (i = 0; i < optionElement.options.length; i++) {
+        currentTitle = optionElement.options[i].title;
+        if (currentTitle == titleElement) {
+            optionElement.selectedIndex = i;
+            optionElement.dispatchEvent(e);
+            break;
+        }
     }
 }
